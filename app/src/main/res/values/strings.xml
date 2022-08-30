@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Weather</string>
+
+    <!--  SearchCityFragment  -->
+<!--    <string name="search_city_hint">Search city</string>-->
+<!--    <string name="temp_tv">%1$s °C</string>-->
+<!--    <string name="loading_tv">Searching…</string>-->
+<!--    <string name="title_activity_main">MainActivity</string>-->
+</resources>
