@@ -3,7 +3,7 @@ A simple weather app using a weather api. In this app is used MVVM pattern with 
 
 If you want to test this app, please visit the site https://www.weatherapi.com/ and generate a new api key.
 Then create a new package in the "core" package named "di" and then create a file called "RetrofitModule.kt" in the "di" package.
-Place the following code in the RetrofitModule.kt file and change "your api key" (line 19) to your api key genereated in the mentioned website.
+Place the following code in the RetrofitModule.kt file and change "your api key" (line 19) to your api key generated in the mentioned website.
 
 
 package com.bignerdranch.android.weather.core.di

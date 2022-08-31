@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.feature_search_city.presentation.search_city.ShortWeatherInfoState
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -108,7 +109,7 @@ fun CityWeatherCard(
                         textAlign = TextAlign.Start
                     )
                     Text(
-                        text = "${weatherInfo.shortWeatherInfo.tempInCelsius} °C",
+                        text = "${weatherInfo.shortWeatherInfo.tempInCelsius.toIntIfPossible()} °C",
                         fontSize = 20.sp,
                         textAlign = TextAlign.End
                     )

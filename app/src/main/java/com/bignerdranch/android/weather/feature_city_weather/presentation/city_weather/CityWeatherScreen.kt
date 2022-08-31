@@ -6,39 +6,41 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import com.bignerdranch.android.weather.ui.theme.WeatherTheme
+import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
+import com.bignerdranch.android.weather.core.log
 import org.koin.androidx.compose.getViewModel
+import java.util.*
+import java.util.Calendar.*
 
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun CityWeatherScreenPreview() {
-    WeatherTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize(),
-            color = MaterialTheme.colors.background
-        ) {
-            CityWeatherScreen("")
-        }
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun CityWeatherScreenPreview() {
+//    WeatherTheme {
+//        Surface(
+//            modifier = Modifier
+//                .fillMaxSize(),
+//            color = MaterialTheme.colors.background
+//        ) {
+//            CityWeatherScreen("")
+//        }
+//    }
+//}
 
 const val ADD_BUTTON_ID = "add_button"
 const val CITY_TEXT_ID = "city_text"
@@ -141,6 +143,29 @@ fun CityWeatherScreen(
                             .layoutId(REFRESH_BUTTON_ID),
                         imageVector = Icons.Default.Refresh,
                         contentDescription = "Reload"
+                    )
+                }
+            }
+            LaunchedEffect(key1 = Unit) {
+                val calendar = GregorianCalendar()
+                log("${calendar.get(YEAR)} ${calendar.get(MONTH)+1} ${calendar.get(DAY_OF_MONTH)}  ${calendar.get(
+                    HOUR_OF_DAY)}:${calendar.get(MINUTE)}:${calendar.get(SECOND)}")
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if(weatherState.cityWeather != null) {
+                    Spacer(Modifier.height(36.dp))
+                    Text(
+                        text = "${weatherState.cityWeather.tempInCelsius.toIntIfPossible()}°C",
+                        style = MaterialTheme.typography.h1
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = weatherState.cityWeather.description,
+                        fontSize = 22.sp
                     )
                 }
             }
