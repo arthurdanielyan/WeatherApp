@@ -11,7 +11,7 @@ fun CityWeatherDto.toCityWeather(): CityWeather =
         tempInFahrenheit = current.tempInFahrenheit,
         isDay = current.isDay == 1,
         description = current.condition.description,
-        iconLink = current.condition.iconLink,
+        icon = null,
         pressure = current.pressure
     )
 

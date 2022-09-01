@@ -1,32 +1,32 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.core.log
 import org.koin.androidx.compose.getViewModel
-import java.util.*
-import java.util.Calendar.*
+import kotlin.math.roundToInt
 
 //@Preview(showBackground = true)
 //@Composable
@@ -56,7 +56,7 @@ fun CityWeatherScreen(
         viewModel.getCityWeather(city)
     }
 
-    val weatherState = viewModel.state.value
+    val weatherState = viewModel.currentWeatherState.value
 
     val constraintsTopBar = ConstraintSet {
         val addButton = createRefFor(ADD_BUTTON_ID)
@@ -146,15 +146,15 @@ fun CityWeatherScreen(
                     )
                 }
             }
-            LaunchedEffect(key1 = Unit) {
-                val calendar = GregorianCalendar()
-                log("${calendar.get(YEAR)} ${calendar.get(MONTH)+1} ${calendar.get(DAY_OF_MONTH)}  ${calendar.get(
-                    HOUR_OF_DAY)}:${calendar.get(MINUTE)}:${calendar.get(SECOND)}")
-            }
+//            LaunchedEffect(Unit) {
+//                val calendar = GregorianCalendar()
+//                log("${calendar.get(YEAR)} ${calendar.get(MONTH)+1} ${calendar.get(DAY_OF_MONTH)}  ${calendar.get(
+//                    HOUR_OF_DAY)}:${calendar.get(MINUTE)}:${calendar.get(SECOND)}")
+//            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if(weatherState.cityWeather != null) {
                     Spacer(Modifier.height(36.dp))
@@ -163,10 +163,30 @@ fun CityWeatherScreen(
                         style = MaterialTheme.typography.h1
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = weatherState.cityWeather.description,
-                        fontSize = 22.sp
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        var descTextHeight by remember { mutableStateOf(0) }
+                        Text(
+                            text = weatherState.cityWeather.description,
+                            fontSize = 25.sp,
+                            modifier = Modifier
+                                .onGloballyPositioned {
+                                    descTextHeight = it.boundsInWindow().size.height.roundToInt()
+                                }
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Image(
+                            bitmap = weatherState.cityWeather.icon!!.asImageBitmap(),
+                            contentDescription = weatherState.cityWeather.description,
+                            modifier = Modifier
+                                .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
         }
