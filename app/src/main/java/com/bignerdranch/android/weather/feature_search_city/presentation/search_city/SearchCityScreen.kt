@@ -1,5 +1,10 @@
 package com.bignerdranch.android.weather.feature_search_city.presentation.search_city
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,16 +18,20 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.feature_search_city.presentation.search_city.components.CityWeatherCard
 import org.koin.androidx.compose.getViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.N)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchCityScreen(
@@ -32,9 +41,28 @@ fun SearchCityScreen(
     val currentWeather = viewModel.state.value
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    var noInternet by remember { mutableStateOf(false) }
+
     var searchCityTfState by rememberSaveable {
         mutableStateOf("")
     }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+            .registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    log("onAvailable")
+                    if (noInternet) {
+                        viewModel.searchCity(searchCityTfState)
+                    }
+                    noInternet = false
+                }
+            })
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,6 +125,8 @@ fun SearchCityScreen(
                     textAlign = TextAlign.Center
                 )
             }
+            if(currentWeather.error == NO_INTERNET_MESSAGE)
+            noInternet = true
         }
     }
 }
