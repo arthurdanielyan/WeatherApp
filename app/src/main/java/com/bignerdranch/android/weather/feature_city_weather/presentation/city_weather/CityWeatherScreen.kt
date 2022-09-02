@@ -2,6 +2,7 @@ package com.bignerdranch.android.weather.feature_city_weather.presentation.city_
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -179,13 +180,21 @@ fun CityWeatherScreen(
                                 }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Image(
-                            bitmap = weatherState.cityWeather.icon!!.asImageBitmap(),
-                            contentDescription = weatherState.cityWeather.description,
-                            modifier = Modifier
-                                .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
-                            contentScale = ContentScale.Crop
-                        )
+                        if(viewModel.weatherIcon.value.icon != null)
+                            Image(
+                                bitmap = viewModel.weatherIcon.value.icon!!.asImageBitmap(),
+                                contentDescription = weatherState.cityWeather.description,
+                                modifier = Modifier
+                                    .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        else
+                            CircularProgressIndicator(
+                                color = Color(0xFF1F3C88),
+                                modifier = Modifier
+                                    .size((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                                strokeWidth = 3.dp
+                            )
                     }
                 }
             }

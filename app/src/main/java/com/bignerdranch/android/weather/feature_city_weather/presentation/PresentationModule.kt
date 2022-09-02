@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 val presentationModule = module {
     viewModel {
-        CityWeatherViewModel(get())
+        CityWeatherViewModel(get(), get())
     }
 }
