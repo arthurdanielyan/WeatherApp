@@ -3,8 +3,6 @@ package com.bignerdranch.android.weather.feature_search_city.presentation.search
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,12 +29,11 @@ import com.bignerdranch.android.weather.feature_search_city.presentation.search_
 import org.koin.androidx.compose.getViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.N)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchCityScreen(
     navController: NavController,
-    viewModel: SearchCityViewModel = getViewModel()
+    viewModel: SearchCityViewModel/* = getViewModel()*/
 ) {
     val currentWeather = viewModel.state.value
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -59,6 +56,11 @@ fun SearchCityScreen(
                         viewModel.searchCity(searchCityTfState)
                     }
                     noInternet = false
+                }
+
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    viewModel.searchCity(searchCityTfState) // this will cause the ui to tell there's no internet
                 }
             })
     }

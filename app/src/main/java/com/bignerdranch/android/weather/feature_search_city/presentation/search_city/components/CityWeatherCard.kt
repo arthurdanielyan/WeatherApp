@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -22,7 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_search_city.presentation.search_city.ShortWeatherInfoState
+import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
+import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -56,8 +60,8 @@ fun CityWeatherCard(
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                Color(0xFF749BFF),
-                                Color(0xFF003DDA)
+                                Color(MaterialTheme.colors.defaultGradientStart.toArgb()),
+                                Color(MaterialTheme.colors.defaultGradientEnd.toArgb())
                             ),
                             start = Offset.Zero,
                             end = Offset.Infinite
@@ -71,13 +75,16 @@ fun CityWeatherCard(
                         cardHeight = windowBounds.size.height
                     }
                     .pointerInteropFilter { touch: MotionEvent ->
+                        log("touch")
                         if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
                             targetScale = touchScale
                             isSwipedBackToCard = false
+                            log("touch inside")
                         }
                         else {
                             targetScale = 1f
                             isSwipedBackToCard = true
+                            log("touch outside")
                         }
 
                         if(touch.actionMasked == MotionEvent.ACTION_UP) {

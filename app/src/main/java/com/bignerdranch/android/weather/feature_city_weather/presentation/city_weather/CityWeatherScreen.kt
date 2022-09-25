@@ -16,6 +16,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layoutId
@@ -26,7 +27,14 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
+import com.bignerdranch.android.weather.core.log
+import com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather.components.ExtremePointsWeatherCard
+import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
+import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 import org.koin.androidx.compose.getViewModel
+import java.text.DateFormat.DAY_OF_WEEK_FIELD
+import java.util.*
+import java.util.Calendar.*
 import kotlin.math.roundToInt
 
 //@Preview(showBackground = true)
@@ -97,8 +105,8 @@ fun CityWeatherScreen(
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF749BFF),
-                        Color(0xFF003DDA)
+                        Color(MaterialTheme.colors.defaultGradientStart.toArgb()),
+                        Color(MaterialTheme.colors.defaultGradientEnd.toArgb())
                     ),
                     start = Offset.Zero,
                     end = Offset.Infinite
@@ -111,7 +119,7 @@ fun CityWeatherScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            Row(
+            Row( // top bar row
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -150,9 +158,9 @@ fun CityWeatherScreen(
 //            LaunchedEffect(Unit) {
 //                val calendar = GregorianCalendar()
 //                log("${calendar.get(YEAR)} ${calendar.get(MONTH)+1} ${calendar.get(DAY_OF_MONTH)}  ${calendar.get(
-//                    HOUR_OF_DAY)}:${calendar.get(MINUTE)}:${calendar.get(SECOND)}")
+//                    HOUR_OF_DAY)}:${calendar.get(MINUTE)}:${calendar.get(SECOND)} ${calendar.get(DAY_OF_WEEK_FIELD)}")
 //            }
-            Column(
+            Column( // temp and desc column
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -197,6 +205,30 @@ fun CityWeatherScreen(
                             )
                     }
                 }
+            }
+            Spacer(modifier = Modifier.height(36.dp))
+            Column( // 3 days column
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                ExtremePointsWeatherCard(
+                    minTemp = 20.0,
+                    maxTemp = 30.0,
+                    description = "haha",
+                    weekDay = THURSDAY
+                )
+                ExtremePointsWeatherCard(
+                    minTemp = 20.0,
+                    maxTemp = 30.0,
+                    description = "haha",
+                    weekDay = FRIDAY
+                )
+                ExtremePointsWeatherCard(
+                    minTemp = 20.0,
+                    maxTemp = 30.0,
+                    description = "haha",
+                    weekDay = SATURDAY
+                )
             }
         }
     }

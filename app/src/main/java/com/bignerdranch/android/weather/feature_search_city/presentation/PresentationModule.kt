@@ -4,8 +4,8 @@ import com.bignerdranch.android.weather.feature_search_city.presentation.search_
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val presentationModule = module {
-    viewModel {
-        SearchCityViewModel(get())
-    }
-}
+//val presentationModule = module {
+//    viewModel {
+//        SearchCityViewModel(get())
+//    }
+//}

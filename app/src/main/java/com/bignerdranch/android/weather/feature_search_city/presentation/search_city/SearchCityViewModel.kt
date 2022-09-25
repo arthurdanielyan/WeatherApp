@@ -4,15 +4,24 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_search_city.domain.usecases.SearchCityUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchCityViewModel(
+@HiltViewModel
+class SearchCityViewModel @Inject constructor(
     private val searchCityUseCase: SearchCityUseCase
 ) : ViewModel() {
+
+
+    fun finalize() {
+        log("SearchCityRepository finalize")
+    }
 
     private val _state = mutableStateOf(ShortWeatherInfoState())
     val state: State<ShortWeatherInfoState> = _state

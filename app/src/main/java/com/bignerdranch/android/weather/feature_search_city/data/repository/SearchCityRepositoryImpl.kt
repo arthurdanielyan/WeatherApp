@@ -11,11 +11,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 class SearchCityRepositoryImpl(
     private val weatherApi: WeatherApi
 ) : SearchCityRepository {
 
+
+    fun finalize() {
+        log("SearchCityRepository finalize")
+    }
 
     override suspend fun searchCity(cityName: String): Flow<Result<ShortWeatherInfo>> = flow {
         try {
