@@ -87,7 +87,7 @@ fun CityWeatherCard(
                             log("touch outside")
                         }
 
-                        if(touch.actionMasked == MotionEvent.ACTION_UP) {
+                        if(touch.actionMasked == MotionEvent.ACTION_UP || touch.actionMasked == MotionEvent.ACTION_CANCEL) {
                             targetScale = 1f
                             if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
                                 onClick(weatherInfo.shortWeatherInfo.city)

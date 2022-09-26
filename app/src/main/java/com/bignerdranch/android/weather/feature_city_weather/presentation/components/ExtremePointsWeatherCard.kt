@@ -4,7 +4,6 @@ import android.view.MotionEvent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -70,12 +69,11 @@ fun ExtremePointsWeatherCard(
                     ),
                     shape = RoundedCornerShape(20.dp)
                 )
-                .border(1.dp, Color.Red)
+                .padding(19.dp)
                 .onGloballyPositioned {
                     val windowBounds = it.boundsInParent()
                     cardWidth = windowBounds.size.width
                     cardHeight = windowBounds.size.height
-//                    log("$cardWidth $cardHeight")
                 }
                 .pointerInteropFilter { touch: MotionEvent ->
                     log("touch")
@@ -89,7 +87,10 @@ fun ExtremePointsWeatherCard(
                         log("touch outside")
                     }
 
-                    if (touch.actionMasked == MotionEvent.ACTION_UP) {
+                    log("${touch.actionMasked}  $isSwipedBackToCard")
+
+                    if (touch.actionMasked == MotionEvent.ACTION_CANCEL || touch.actionMasked == MotionEvent.ACTION_UP) {
+                        log("action up")
                         targetScale = 1f
 //                        if (touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
 //                        onClick(weatherInfo.shortWeatherInfo.city)
@@ -98,8 +99,7 @@ fun ExtremePointsWeatherCard(
                     }
 
                     true
-                }
-                .padding(19.dp),
+                },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {

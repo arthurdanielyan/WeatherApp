@@ -12,4 +12,7 @@ interface WeatherApi {
 
     @GET("current.json")
     suspend fun getCityWeather(@Query("q") city: String): CityWeatherDto
+
+    @GET("forecast.json?days=3")
+    suspend fun getWeatherOfDay(@Query("q") city: String)
 }

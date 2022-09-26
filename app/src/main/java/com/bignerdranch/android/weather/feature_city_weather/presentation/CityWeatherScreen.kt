@@ -219,13 +219,13 @@ fun CityWeatherScreen(
                 ExtremePointsWeatherCard(
                     minTemp = 20.0,
                     maxTemp = 30.0,
-                    description = "haha",
+                    description = "hehe",
                     weekDay = FRIDAY
                 )
                 ExtremePointsWeatherCard(
                     minTemp = 20.0,
                     maxTemp = 30.0,
-                    description = "haha",
+                    description = "hihi",
                     weekDay = SATURDAY
                 )
             }

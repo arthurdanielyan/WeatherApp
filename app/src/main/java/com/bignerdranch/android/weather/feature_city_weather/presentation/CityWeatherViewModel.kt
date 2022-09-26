@@ -13,6 +13,7 @@ import com.bignerdranch.android.weather.feature_city_weather.presentation.state_
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.WeatherIconState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,6 +58,13 @@ class CityWeatherViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun get3DayShortWeather() {
+        viewModelScope.launch {
+            val calendar = GregorianCalendar()
+
         }
     }
 
