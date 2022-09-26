@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather
+package com.bignerdranch.android.weather.feature_city_weather.presentation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -9,11 +9,14 @@ import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetCityWeatherUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetIconUseCase
-import com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather.state_wrappers.CityWeatherState
-import com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather.state_wrappers.WeatherIconState
+import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.CityWeatherState
+import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.WeatherIconState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CityWeatherViewModel(
+@HiltViewModel
+class CityWeatherViewModel @Inject constructor(
     private val getCityWeatherUseCase: GetCityWeatherUseCase,
     private val getIconUseCase: GetIconUseCase
 ) : ViewModel() {

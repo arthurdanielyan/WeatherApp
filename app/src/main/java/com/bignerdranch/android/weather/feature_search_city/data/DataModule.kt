@@ -1,13 +1,11 @@
 package com.bignerdranch.android.weather.feature_search_city.data
 
-import com.bignerdranch.android.weather.core.data.WeatherApi
 import com.bignerdranch.android.weather.feature_search_city.data.repository.SearchCityRepositoryImpl
 import com.bignerdranch.android.weather.feature_search_city.domain.repository.SearchCityRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.koin.dsl.module
 import javax.inject.Singleton
 
 //val dataModule = module {
@@ -18,10 +16,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataModule {
+abstract class DataModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideSearchCityRepository(weatherApi: WeatherApi): SearchCityRepository =
-        SearchCityRepositoryImpl(weatherApi)
+    abstract fun bindCityWeatherRepository(
+        searchCityRepositoryImpl: SearchCityRepositoryImpl
+    ): SearchCityRepository
 }

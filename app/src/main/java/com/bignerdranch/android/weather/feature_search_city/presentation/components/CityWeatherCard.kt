@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.feature_search_city.presentation.search_city.components
+package com.bignerdranch.android.weather.feature_search_city.presentation.components
 
 import android.view.MotionEvent
 import androidx.compose.animation.core.animateFloatAsState
@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.log
-import com.bignerdranch.android.weather.feature_search_city.presentation.search_city.ShortWeatherInfoState
+import com.bignerdranch.android.weather.feature_search_city.presentation.ShortWeatherInfoState
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 

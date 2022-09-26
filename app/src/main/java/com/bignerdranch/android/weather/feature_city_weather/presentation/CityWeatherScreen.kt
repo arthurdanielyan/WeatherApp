@@ -1,7 +1,10 @@
-package com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather
+package com.bignerdranch.android.weather.feature_city_weather.presentation
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -27,13 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.core.log
-import com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather.components.ExtremePointsWeatherCard
+import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
-import org.koin.androidx.compose.getViewModel
-import java.text.DateFormat.DAY_OF_WEEK_FIELD
-import java.util.*
 import java.util.Calendar.*
 import kotlin.math.roundToInt
 
@@ -59,7 +58,7 @@ const val COUNTRY_TEXT_ID = "country_button_id"
 @Composable
 fun CityWeatherScreen(
     city: String,
-    viewModel: CityWeatherViewModel = getViewModel()
+    viewModel: CityWeatherViewModel
 ) {
     LaunchedEffect(key1 = Unit) {
         viewModel.getCityWeather(city)

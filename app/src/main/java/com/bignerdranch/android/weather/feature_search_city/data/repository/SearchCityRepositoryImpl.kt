@@ -3,9 +3,8 @@ package com.bignerdranch.android.weather.feature_search_city.data.repository
 import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.toShortWeatherInfo
-import com.bignerdranch.android.weather.core.log
-import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.core.model.Result
+import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.feature_search_city.domain.repository.SearchCityRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,14 +12,9 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class SearchCityRepositoryImpl(
+class SearchCityRepositoryImpl @Inject constructor(
     private val weatherApi: WeatherApi
 ) : SearchCityRepository {
-
-
-    fun finalize() {
-        log("SearchCityRepository finalize")
-    }
 
     override suspend fun searchCity(cityName: String): Flow<Result<ShortWeatherInfo>> = flow {
         try {

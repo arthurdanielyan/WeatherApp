@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.feature_search_city.presentation.search_city
+package com.bignerdranch.android.weather.feature_search_city.presentation
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -25,8 +25,7 @@ import androidx.navigation.NavController
 import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.presentation.Screen
-import com.bignerdranch.android.weather.feature_search_city.presentation.search_city.components.CityWeatherCard
-import org.koin.androidx.compose.getViewModel
+import com.bignerdranch.android.weather.feature_search_city.presentation.components.CityWeatherCard
 
 
 @OptIn(ExperimentalComposeUiApi::class)

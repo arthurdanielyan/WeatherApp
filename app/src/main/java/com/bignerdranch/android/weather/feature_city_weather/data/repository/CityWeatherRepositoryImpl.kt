@@ -17,8 +17,9 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.URL
+import javax.inject.Inject
 
-class CityWeatherRepositoryImpl(
+class CityWeatherRepositoryImpl @Inject constructor (
     private val weatherApi: WeatherApi
 ) : CityWeatherRepository {
 

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.feature_search_city.presentation.search_city
+package com.bignerdranch.android.weather.feature_search_city.presentation
 
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 

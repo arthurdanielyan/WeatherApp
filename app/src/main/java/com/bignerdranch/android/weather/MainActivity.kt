@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.bignerdranch.android.weather.core.presentation.*
-import com.bignerdranch.android.weather.feature_city_weather.presentation.city_weather.CityWeatherScreen
-import com.bignerdranch.android.weather.feature_search_city.presentation.search_city.SearchCityScreen
+import com.bignerdranch.android.weather.feature_city_weather.presentation.CityWeatherScreen
+import com.bignerdranch.android.weather.feature_search_city.presentation.SearchCityScreen
 import com.bignerdranch.android.weather.ui.theme.WeatherTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -56,7 +56,8 @@ class MainActivity : ComponentActivity() {
                             exitTransition = { slideOutRight }
                         ) { navBackStackEntry: NavBackStackEntry ->
                             CityWeatherScreen(
-                                city = navBackStackEntry.arguments?.getString(ARG_CITY) ?: "unexpected error"
+                                city = navBackStackEntry.arguments?.getString(ARG_CITY) ?: "unexpected error",
+                                viewModel = hiltViewModel()
                             )
                         }
                     }
