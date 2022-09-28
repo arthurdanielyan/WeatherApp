@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
-import java.util.Calendar.*
 import kotlin.math.roundToInt
 
 //@Preview(showBackground = true)
@@ -57,12 +57,15 @@ const val COUNTRY_TEXT_ID = "country_button_id"
 
 @Composable
 fun CityWeatherScreen(
-    city: String,
     viewModel: CityWeatherViewModel
 ) {
-    LaunchedEffect(key1 = Unit) {
-        viewModel.getCityWeather(city)
-    }
+//    var launchedEffectTriggered by rememberSaveable {  mutableStateOf(false) }
+//    if(!launchedEffectTriggered)
+//    LaunchedEffect(key1 = Unit) {
+//        viewModel.getCityWeather(city)
+//        launchedEffectTriggered = true
+//        log("vm called")
+//    }
 
     val weatherState = viewModel.currentWeatherState.value
 
@@ -206,28 +209,32 @@ fun CityWeatherScreen(
                 }
             }
             Spacer(modifier = Modifier.height(36.dp))
-            Column( // 3 days column
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                ExtremePointsWeatherCard(
-                    minTemp = 20.0,
-                    maxTemp = 30.0,
-                    description = "haha",
-                    weekDay = THURSDAY
-                )
-                ExtremePointsWeatherCard(
-                    minTemp = 20.0,
-                    maxTemp = 30.0,
-                    description = "hehe",
-                    weekDay = FRIDAY
-                )
-                ExtremePointsWeatherCard(
-                    minTemp = 20.0,
-                    maxTemp = 30.0,
-                    description = "hihi",
-                    weekDay = SATURDAY
-                )
+            val shortForecastState by viewModel.shortForecastState.collectAsState()
+            if(shortForecastState.shortForecast != null) {
+                val shortForecast = shortForecastState.shortForecast!!
+                Column( // 3 days column
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    ExtremePointsWeatherCard(
+                        minTemp = shortForecast.forecastDays[0].minTempInCelsius,
+                        maxTemp = shortForecast.forecastDays[0].maxTempInCelsius,
+                        description = shortForecast.forecastDays[0].description,
+                        day = shortForecast.forecastDays[0].day
+                    )
+                    ExtremePointsWeatherCard(
+                        minTemp = shortForecast.forecastDays[1].minTempInCelsius,
+                        maxTemp = shortForecast.forecastDays[1].maxTempInCelsius,
+                        description = shortForecast.forecastDays[1].description,
+                        day = shortForecast.forecastDays[1].day
+                    )
+                    ExtremePointsWeatherCard(
+                        minTemp = shortForecast.forecastDays[2].minTempInCelsius,
+                        maxTemp = shortForecast.forecastDays[2].maxTempInCelsius,
+                        description = shortForecast.forecastDays[2].description,
+                        day = shortForecast.forecastDays[2].day
+                    )
+                }
             }
         }
     }

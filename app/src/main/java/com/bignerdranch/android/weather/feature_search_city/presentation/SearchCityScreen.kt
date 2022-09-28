@@ -34,6 +34,8 @@ fun SearchCityScreen(
     navController: NavController,
     viewModel: SearchCityViewModel/* = getViewModel()*/
 ) {
+
+    log("main composable")
     val currentWeather = viewModel.state.value
     val keyboardController = LocalSoftwareKeyboardController.current
 

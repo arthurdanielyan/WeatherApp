@@ -3,11 +3,14 @@ package com.bignerdranch.android.weather.feature_city_weather.data.repository
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import com.bignerdranch.android.weather.core.API_ERROR_MESSAGE
 import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.toCityWeather
+import com.bignerdranch.android.weather.core.data.dto.toShortForecast
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
+import com.bignerdranch.android.weather.feature_city_weather.domain.model.ShortForecast
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +35,7 @@ class CityWeatherRepositoryImpl @Inject constructor (
             iconLink = cityWeatherDto.current.condition.iconLink
             emit(Result.Success(cityWeatherDto.toCityWeather()))
         } catch (e: HttpException) {
-            emit(Result.Error("An unexpected error occurred."))
+            emit(Result.Error(API_ERROR_MESSAGE))
         } catch (e: IOException) {
             emit(Result.Error(NO_INTERNET_MESSAGE))
         }
@@ -67,5 +70,15 @@ class CityWeatherRepositoryImpl @Inject constructor (
         return gettingIconBitmap.await()
     }
 
-
+    override suspend fun get3DaysForecast(city: String): Flow<Result<ShortForecast>> = flow {
+        try {
+            emit(Result.Loading())
+            val shortForecast = weatherApi.getForecast(city).toShortForecast()
+            emit(Result.Success(shortForecast))
+        } catch (e: HttpException) {
+            emit(Result.Error(API_ERROR_MESSAGE))
+        } catch (e: IOException) {
+            emit(Result.Error(NO_INTERNET_MESSAGE))
+        }
+    }
 }

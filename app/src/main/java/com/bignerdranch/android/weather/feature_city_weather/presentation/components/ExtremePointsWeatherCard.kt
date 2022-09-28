@@ -22,11 +22,8 @@ import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
-import java.util.*
-import java.util.Calendar.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -35,7 +32,7 @@ fun ExtremePointsWeatherCard(
     minTemp: Double,
     maxTemp: Double,
     description: String,
-    weekDay: Int
+    day: String
 ) {
     val textSize = 20.sp
 
@@ -76,21 +73,15 @@ fun ExtremePointsWeatherCard(
                     cardHeight = windowBounds.size.height
                 }
                 .pointerInteropFilter { touch: MotionEvent ->
-                    log("touch")
                     if (touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
                         targetScale = touchScale
                         isSwipedBackToCard = false
-                        log("touch inside")
                     } else {
                         targetScale = 1f
                         isSwipedBackToCard = true
-                        log("touch outside")
                     }
 
-                    log("${touch.actionMasked}  $isSwipedBackToCard")
-
                     if (touch.actionMasked == MotionEvent.ACTION_CANCEL || touch.actionMasked == MotionEvent.ACTION_UP) {
-                        log("action up")
                         targetScale = 1f
 //                        if (touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
 //                        onClick(weatherInfo.shortWeatherInfo.city)
@@ -104,13 +95,7 @@ fun ExtremePointsWeatherCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = buildString {
-                    if (isYesterday(weekDay)) append("Yesterday")
-                    else if (isToday(weekDay)) append("Today")
-                    else if (isTomorrow(weekDay)) append("Tomorrow")
-                    else append(weekDayToString(weekDay))
-                    append(" - $description")
-                },
+                text = "$day - $description",
                 fontSize = textSize
             )
             Text(
@@ -121,26 +106,3 @@ fun ExtremePointsWeatherCard(
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
-
-fun isToday(dayOfWeek: Int): Boolean =
-    (GregorianCalendar().get(DAY_OF_WEEK) == dayOfWeek)
-
-fun isYesterday(dayOfWeek: Int): Boolean =
-    (GregorianCalendar().get(DAY_OF_WEEK) == SUNDAY && dayOfWeek == SATURDAY) ||
-            GregorianCalendar().get(DAY_OF_WEEK)-1 == dayOfWeek
-
-fun isTomorrow(dayOfWeek: Int): Boolean =
-    (GregorianCalendar().get(DAY_OF_WEEK) == SATURDAY && dayOfWeek == SUNDAY) ||
-            GregorianCalendar().get(DAY_OF_WEEK)+1 == dayOfWeek
-
-fun weekDayToString(weekDay: Int) =
-    when(weekDay) {
-        MONDAY -> "Monday"
-        TUESDAY -> "Tuesday"
-        WEDNESDAY -> "Wednesday"
-        THURSDAY -> "Thursday"
-        FRIDAY -> "Friday"
-        SATURDAY -> "Saturday"
-        SUNDAY -> "Sunday"
-        else -> "Someday"
-    }

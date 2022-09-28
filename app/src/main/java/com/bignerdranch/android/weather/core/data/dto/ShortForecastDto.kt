@@ -11,7 +11,7 @@ fun ShortForecastDto.toShortForecast(): ShortForecast =
 
 fun ForecastDayDto.toForecastDay(): ForecastDay =
     ForecastDay(
-        day = this.date.substring(this.date.length-2).toInt(),
+        day = this.date.substring(this.date.length-2),
         maxTempInCelsius = this.day.maxTempInCelsius,
         minTempInCelsius = day.minTempInCelsius,
         maxTempInFahrenheit = day.maxTempInFahrenheit,

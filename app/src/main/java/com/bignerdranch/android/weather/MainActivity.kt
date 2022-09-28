@@ -9,7 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
+import com.bignerdranch.android.weather.core.ARG_CITY
 import com.bignerdranch.android.weather.core.presentation.*
 import com.bignerdranch.android.weather.feature_city_weather.presentation.CityWeatherScreen
 import com.bignerdranch.android.weather.feature_search_city.presentation.SearchCityScreen
@@ -21,11 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    companion object {
-        const val ARG_CITY = "city"
-    }
-
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,11 +49,8 @@ class MainActivity : ComponentActivity() {
                             route = Screen.CityWeatherScreen.route + "/{$ARG_CITY}",
                             enterTransition = { slideInLeft },
                             exitTransition = { slideOutRight }
-                        ) { navBackStackEntry: NavBackStackEntry ->
-                            CityWeatherScreen(
-                                city = navBackStackEntry.arguments?.getString(ARG_CITY) ?: "unexpected error",
-                                viewModel = hiltViewModel()
-                            )
+                        ) {
+                            CityWeatherScreen(hiltViewModel())
                         }
                     }
                 }
