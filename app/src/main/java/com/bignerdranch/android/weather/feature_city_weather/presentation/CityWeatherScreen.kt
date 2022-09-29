@@ -1,12 +1,8 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -29,11 +25,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.log
+import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ClickableIcon
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlin.math.roundToInt
 
 //@Preview(showBackground = true)
@@ -59,15 +59,7 @@ const val COUNTRY_TEXT_ID = "country_button_id"
 fun CityWeatherScreen(
     viewModel: CityWeatherViewModel
 ) {
-//    var launchedEffectTriggered by rememberSaveable {  mutableStateOf(false) }
-//    if(!launchedEffectTriggered)
-//    LaunchedEffect(key1 = Unit) {
-//        viewModel.getCityWeather(city)
-//        launchedEffectTriggered = true
-//        log("vm called")
-//    }
-
-    val weatherState = viewModel.currentWeatherState.value
+    val weatherState = viewModel.currentWeatherState.collectAsState().value
 
     val constraintsTopBar = ConstraintSet {
         val addButton = createRefFor(ADD_BUTTON_ID)
@@ -130,11 +122,12 @@ fun CityWeatherScreen(
                         .fillMaxWidth(),
                     constraintSet = constraintsTopBar
                 ) {
-                    Icon(
+                    ClickableIcon(
                         modifier = Modifier
                             .layoutId(ADD_BUTTON_ID),
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add city"
+                        contentDescription = "Add city",
+                        onClick = {}
                     )
                     Text(
                         modifier = Modifier
@@ -149,68 +142,84 @@ fun CityWeatherScreen(
                         text = weatherState.cityWeather?.country ?: "Loading…",
                         fontSize = 15.sp
                     )
-                    Icon(
+                    ClickableIcon(
                         modifier = Modifier
                             .layoutId(REFRESH_BUTTON_ID),
                         imageVector = Icons.Default.Refresh,
-                        contentDescription = "Reload"
+                        contentDescription = "Reload",
+                        onClick = {
+                            weatherState.cityWeather?.city?.let {
+                                viewModel.getCityWeather(it)
+                            }
+                            log("updating")
+                        }
                     )
                 }
             }
-//            LaunchedEffect(Unit) {
-//                val calendar = GregorianCalendar()
-//                log("${calendar.get(YEAR)} ${calendar.get(MONTH)+1} ${calendar.get(DAY_OF_MONTH)}  ${calendar.get(
-//                    HOUR_OF_DAY)}:${calendar.get(MINUTE)}:${calendar.get(SECOND)} ${calendar.get(DAY_OF_WEEK_FIELD)}")
-//            }
-            Column( // temp and desc column
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                if(weatherState.cityWeather != null) {
-                    Spacer(Modifier.height(36.dp))
-                    Text(
-                        text = "${weatherState.cityWeather.tempInCelsius.toIntIfPossible()}°C",
-                        style = MaterialTheme.typography.h1
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        var descTextHeight by remember { mutableStateOf(0) }
+//            val isRefreshing = weatherState.isLoading
+//            SwipeRefresh(
+//                modifier = Modifier
+//                    .border(2.dp, Color.Red),
+//                state = rememberSwipeRefreshState(isRefreshing),
+//                onRefresh = {
+//                    weatherState.cityWeather?.city?.let {
+//                        viewModel.getCityWeather(it)
+//                    }
+//                }
+//            ) {
+                Column(
+                    // temp and desc column
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    if (weatherState.cityWeather != null) {
+                        Spacer(Modifier.height(36.dp))
                         Text(
-                            text = weatherState.cityWeather.description,
-                            fontSize = 25.sp,
-                            modifier = Modifier
-                                .onGloballyPositioned {
-                                    descTextHeight = it.boundsInWindow().size.height.roundToInt()
-                                }
+                            text = "${weatherState.cityWeather.tempInCelsius.toIntIfPossible()}°C",
+                            style = MaterialTheme.typography.h1
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        if(viewModel.weatherIcon.value.icon != null)
-                            Image(
-                                bitmap = viewModel.weatherIcon.value.icon!!.asImageBitmap(),
-                                contentDescription = weatherState.cityWeather.description,
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            var descTextHeight by remember { mutableStateOf(0) }
+                            Text(
+                                text = weatherState.cityWeather.description,
+                                fontSize = 25.sp,
                                 modifier = Modifier
-                                    .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
-                                contentScale = ContentScale.Crop
+                                    .onGloballyPositioned {
+                                        descTextHeight =
+                                            it.boundsInWindow().size.height.roundToInt()
+                                    }
                             )
-                        else
-                            CircularProgressIndicator(
-                                color = Color(0xFF1F3C88),
-                                modifier = Modifier
-                                    .size((descTextHeight / LocalDensity.current.density).dp - 8.dp),
-                                strokeWidth = 3.dp
-                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            val weatherIcon = viewModel.weatherIcon.collectAsState().value
+                            if (weatherIcon.icon != null)
+                                Image(
+                                    bitmap = weatherIcon.icon.asImageBitmap(),
+                                    contentDescription = weatherState.cityWeather.description,
+                                    modifier = Modifier
+                                        .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            else
+                                CircularProgressIndicator(
+                                    color = Color(0xFF1F3C88),
+                                    modifier = Modifier
+                                        .size((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                                    strokeWidth = 3.dp
+                                )
+                        }
                     }
                 }
-            }
+//            }
             Spacer(modifier = Modifier.height(36.dp))
             val shortForecastState by viewModel.shortForecastState.collectAsState()
-            if(shortForecastState.shortForecast != null) {
+            if (shortForecastState.shortForecast != null) {
                 val shortForecast = shortForecastState.shortForecast!!
                 Column( // 3 days column
                     modifier = Modifier
@@ -233,6 +242,18 @@ fun CityWeatherScreen(
                         maxTemp = shortForecast.forecastDays[2].maxTempInCelsius,
                         description = shortForecast.forecastDays[2].description,
                         day = shortForecast.forecastDays[2].day
+                    )
+                }
+            } else if (shortForecastState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = Color(0xFF1F3C88),
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
+                        strokeWidth = 10.dp
                     )
                 }
             }

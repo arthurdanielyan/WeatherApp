@@ -8,6 +8,7 @@ import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.toCityWeather
 import com.bignerdranch.android.weather.core.data.dto.toShortForecast
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.ShortForecast
@@ -73,8 +74,8 @@ class CityWeatherRepositoryImpl @Inject constructor (
     override suspend fun get3DaysForecast(city: String): Flow<Result<ShortForecast>> = flow {
         try {
             emit(Result.Loading())
-            val shortForecast = weatherApi.getForecast(city).toShortForecast()
-            emit(Result.Success(shortForecast))
+            val shortForecast = weatherApi.getForecast(city)
+            emit(Result.Success(shortForecast.toShortForecast()))
         } catch (e: HttpException) {
             emit(Result.Error(API_ERROR_MESSAGE))
         } catch (e: IOException) {

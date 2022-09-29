@@ -1,8 +1,5 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,13 +26,11 @@ class CityWeatherViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _currentWeatherState: MutableState<CityWeatherState> = mutableStateOf(
-        CityWeatherState()
-    )
-    val currentWeatherState: State<CityWeatherState> = _currentWeatherState
+    private val _currentWeatherState = MutableStateFlow(CityWeatherState())
+    val currentWeatherState = _currentWeatherState.asStateFlow()
 
-    private val _weatherIcon = mutableStateOf(WeatherIconState())
-    val weatherIcon: State<WeatherIconState> = _weatherIcon
+    private val _weatherIcon = MutableStateFlow(WeatherIconState())
+    val weatherIcon = _weatherIcon.asStateFlow()
 
     private val _shortForecastState = MutableStateFlow(ShortForecastState())
     val shortForecastState = _shortForecastState.asStateFlow()
@@ -43,11 +38,11 @@ class CityWeatherViewModel @Inject constructor(
     init {
         savedStateHandle.get<String>(ARG_CITY)?.let {
             getCityWeather(it)
-            get3DayShortWeather(it)
         }
     }
 
-    private fun getCityWeather(city: String) {
+    fun getCityWeather(city: String) {
+        _shortForecastState.value = ShortForecastState() // makes progress bar appear for short forecast cards
         viewModelScope.launch {
             getCityWeatherUseCase(city).collect { result ->
                 when(result) {
@@ -58,6 +53,7 @@ class CityWeatherViewModel @Inject constructor(
                             error = ""
                         )
                         getIcon()
+                        get3DayShortWeather(city)
                     }
                     is Result.Loading -> {
                         _currentWeatherState.value = CityWeatherState(

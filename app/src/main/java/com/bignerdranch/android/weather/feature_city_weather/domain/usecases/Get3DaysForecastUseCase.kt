@@ -16,42 +16,38 @@ class Get3DaysForecastUseCase(
     suspend operator fun invoke(city: String): Flow<Result<ShortForecast>> {
         val resultFlow = cityWeatherRepository.get3DaysForecast(city)
         var newFlow = resultFlow
-        resultFlow.collect { result ->
-            if(result is Result.Success) {
-                log("from UseCase result is success")
-                val shortForecast = result.data!!
-                shortForecast.forecastDays.forEach { forecastDay ->
-                    val day = forecastDay.day.toInt()
-                    val today = GregorianCalendar().get(DAY_OF_MONTH)
-                    if(day == today) {
+        newFlow.collect { result ->
+            if (result !is Result.Success) return@collect
+            log("from UseCase result is success")
+            val shortForecast = result.data!!
+            shortForecast.forecastDays.forEach { forecastDay ->
+                val day = forecastDay.day.toInt()
+                val today = GregorianCalendar().get(DAY_OF_MONTH)
+                when (day) {
+                    today -> {
                         forecastDay.day = "Today"
-                    } else if(day == GregorianCalendar().apply { add(DAY_OF_MONTH, 1) }.get(DAY_OF_MONTH)) {
+                    }
+                    GregorianCalendar().apply { add(DAY_OF_MONTH, 1) }.get(DAY_OF_MONTH) -> {
                         forecastDay.day = "Tomorrow"
                     }
-                    else {
+                    else -> {
                         forecastDay.day = convertToWeekDay(day)
                     }
                 }
-                log(shortForecast.forecastDays[0])
-                log(shortForecast.forecastDays[1])
-                log(shortForecast.forecastDays[2])
-                val sortedList = shortForecast.forecastDays.toMutableList().also { forecastDays ->
-                    forecastDays.forEachIndexed { index, forecastDay ->
-                        if (forecastDay.day == "Today" && index != 0) {
-                            forecastDays.swap(index, 0)
-                            log("swapping $index 0")
-                        } else if(forecastDay.day == "Tomorrow" && index != 1) {
-                            forecastDays.swap(index, 1)
-                            log("swapping $index 1")
-                        }
-                        else if (forecastDay.day !== "Tomorrow" && forecastDay.day == "Today" && index != 2) {
-                            forecastDays.swap(index, 2)
-                            log("swapping $index 2")
-                        }
+            }
+            val sortedList = shortForecast.forecastDays.toMutableList().also { forecastDays ->
+                forecastDays.forEachIndexed { index, forecastDay ->
+                    if (forecastDay.day == "Today" && index != 0) {
+                        forecastDays.swap(index, 0)
+                    } else if(forecastDay.day == "Tomorrow" && index != 1) {
+                        forecastDays.swap(index, 1)
+                    }
+                    else if (forecastDay.day !== "Tomorrow" && forecastDay.day == "Today" && index != 2) {
+                        forecastDays.swap(index, 2)
                     }
                 }
-                newFlow = flow { emit(Result.Success(shortForecast.copy(sortedList))) }
-            } else return@collect
+            }
+            newFlow = flow { emit(Result.Success(shortForecast.copy(forecastDays = sortedList))) }
         }
         return newFlow
     }

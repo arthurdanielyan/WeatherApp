@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -34,7 +35,7 @@ fun ExtremePointsWeatherCard(
     description: String,
     day: String
 ) {
-    val textSize = 20.sp
+    val textSize = 16.sp
 
     val touchScale = 0.9f
     var targetScale by remember { mutableStateOf(1f) }
