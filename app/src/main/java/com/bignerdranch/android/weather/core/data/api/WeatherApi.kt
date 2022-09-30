@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.core.data
+package com.bignerdranch.android.weather.core.data.api
 
 import com.bignerdranch.android.weather.core.data.dto.CityWeatherDto
 import com.bignerdranch.android.weather.core.data.dto.ShortForecastDto

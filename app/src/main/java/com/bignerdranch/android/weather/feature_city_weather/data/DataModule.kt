@@ -8,12 +8,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-//val dataModule = module {
-//    single<CityWeatherRepository> {
-//        CityWeatherRepositoryImpl(get())
-//    }
-//}
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {

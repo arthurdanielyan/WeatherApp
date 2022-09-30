@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.weather.core.ARG_CITY
 import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Result
+import com.bignerdranch.android.weather.feature_city_weather.domain.model.toShortWeatherInfo
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.Get3DaysForecastUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetCityWeatherUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetIconUseCase
+import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.SaveCityUseCase
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.CityWeatherState
+import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ShortForecastState
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.WeatherIconState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +26,7 @@ class CityWeatherViewModel @Inject constructor(
     private val getCityWeatherUseCase: GetCityWeatherUseCase,
     private val get3DaysForecastUseCase: Get3DaysForecastUseCase,
     private val getIconUseCase: GetIconUseCase,
+    private val saveCityUseCase: SaveCityUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -34,6 +38,11 @@ class CityWeatherViewModel @Inject constructor(
 
     private val _shortForecastState = MutableStateFlow(ShortForecastState())
     val shortForecastState = _shortForecastState.asStateFlow()
+
+    private val _screenEvents: MutableStateFlow<ScreenEvent?> = MutableStateFlow(null)
+    val screenEvents = _screenEvents.asStateFlow()
+
+    private var isNewlyLaunched = true
 
     init {
         savedStateHandle.get<String>(ARG_CITY)?.let {
@@ -49,23 +58,24 @@ class CityWeatherViewModel @Inject constructor(
                     is Result.Success -> {
                         _currentWeatherState.value = CityWeatherState(
                             isLoading = false,
-                            cityWeather = result.data!!,
+                            value = result.data!!,
                             error = ""
                         )
                         getIcon()
                         get3DayShortWeather(city)
+                        if(isNewlyLaunched) isNewlyLaunched = false
                     }
                     is Result.Loading -> {
                         _currentWeatherState.value = CityWeatherState(
                             isLoading = true,
-                            cityWeather = null,
+                            value = null,
                             error = ""
                         )
                     }
                     is Result.Error -> {
                         _currentWeatherState.value = CityWeatherState(
                             isLoading = false,
-                            cityWeather = null,
+                            value = null,
                             error = result.message!!
                         )
                     }
@@ -81,21 +91,21 @@ class CityWeatherViewModel @Inject constructor(
                     is Result.Loading -> {
                         _shortForecastState.value = ShortForecastState(
                             isLoading = true,
-                            shortForecast = null,
+                            value = null,
                             error = ""
                         )
                     }
                     is Result.Success -> {
                         _shortForecastState.value = ShortForecastState(
                             isLoading = false,
-                            shortForecast = result.data!!,
+                            value = result.data!!,
                             error = ""
                         )
                     }
                     is Result.Error -> {
                         _shortForecastState.value = ShortForecastState(
                             isLoading = false,
-                            shortForecast = null,
+                            value = null,
                             error = result.message!!
                         )
                     }
@@ -108,6 +118,16 @@ class CityWeatherViewModel @Inject constructor(
         viewModelScope.launch {
             log("getting icon")
             _weatherIcon.value = WeatherIconState(getIconUseCase())
+        }
+    }
+    
+    fun saveCity() {
+        viewModelScope.launch {
+            if(_currentWeatherState.value.value != null) {
+                saveCityUseCase(_currentWeatherState.value.value!!.toShortWeatherInfo())
+            } else {
+                _screenEvents.value = ScreenEvent.ShowSnackBar("Couldn't refresh")
+            }
         }
     }
 }

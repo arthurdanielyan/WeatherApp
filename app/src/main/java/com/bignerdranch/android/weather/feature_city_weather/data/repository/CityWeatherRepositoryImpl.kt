@@ -5,14 +5,15 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import com.bignerdranch.android.weather.core.API_ERROR_MESSAGE
 import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
-import com.bignerdranch.android.weather.core.data.WeatherApi
+import com.bignerdranch.android.weather.core.data.api.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.toCityWeather
 import com.bignerdranch.android.weather.core.data.dto.toShortForecast
-import com.bignerdranch.android.weather.core.log
+import com.bignerdranch.android.weather.core.data.room.AppDb
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.ShortForecast
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
+import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,10 +25,13 @@ import java.net.URL
 import javax.inject.Inject
 
 class CityWeatherRepositoryImpl @Inject constructor (
-    private val weatherApi: WeatherApi
+    private val weatherApi: WeatherApi,
+    appDatabase: AppDb
 ) : CityWeatherRepository {
 
     private lateinit var iconLink: String
+
+    private val myCitiesDao = appDatabase.myCitiesDao
 
     override suspend fun getWeather(city: String): Flow<Result<CityWeather>> = flow {
         try {
@@ -81,5 +85,9 @@ class CityWeatherRepositoryImpl @Inject constructor (
         } catch (e: IOException) {
             emit(Result.Error(NO_INTERNET_MESSAGE))
         }
+    }
+
+    override suspend fun saveCity(city: ShortWeatherInfo) {
+        myCitiesDao.insert(city)
     }
 }

@@ -1,7 +1,12 @@
 package com.bignerdranch.android.weather.feature_city_weather.domain.model
 
 import android.graphics.Bitmap
+import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 
+fun CityWeather.toShortWeatherInfo() =
+    ShortWeatherInfo(
+        city, country, tempInCelsius, tempInFahrenheit
+    )
 
 data class CityWeather(
     val city: String,

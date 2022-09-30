@@ -3,5 +3,5 @@ package com.bignerdranch.android.weather.feature_city_weather.presentation.state
 import android.graphics.Bitmap
 
 data class WeatherIconState (
-    val icon: Bitmap? = null
+    val value: Bitmap? = null
 )

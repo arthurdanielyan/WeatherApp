@@ -4,6 +4,6 @@ import com.bignerdranch.android.weather.feature_city_weather.domain.model.ShortF
 
 data class ShortForecastState(
     val isLoading: Boolean = true,
-    val shortForecast: ShortForecast? = null,
+    val value: ShortForecast? = null,
     val error: String = ""
 )

@@ -4,6 +4,6 @@ import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWe
 
 data class CityWeatherState (
     val isLoading: Boolean = true,
-    val cityWeather: CityWeather? = null,
+    val value: CityWeather? = null,
     val error: String = ""
 )
