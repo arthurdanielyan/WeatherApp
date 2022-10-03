@@ -39,10 +39,8 @@ class CityWeatherViewModel @Inject constructor(
     private val _shortForecastState = MutableStateFlow(ShortForecastState())
     val shortForecastState = _shortForecastState.asStateFlow()
 
-    private val _screenEvents: MutableStateFlow<ScreenEvent?> = MutableStateFlow(null)
+    private val _screenEvents: MutableStateFlow<ScreenEvent> = MutableStateFlow(ScreenEvent.Nothing)
     val screenEvents = _screenEvents.asStateFlow()
-
-    private var isNewlyLaunched = true
 
     init {
         savedStateHandle.get<String>(ARG_CITY)?.let {
@@ -63,7 +61,6 @@ class CityWeatherViewModel @Inject constructor(
                         )
                         getIcon()
                         get3DayShortWeather(city)
-                        if(isNewlyLaunched) isNewlyLaunched = false
                     }
                     is Result.Loading -> {
                         _currentWeatherState.value = CityWeatherState(
@@ -125,8 +122,9 @@ class CityWeatherViewModel @Inject constructor(
         viewModelScope.launch {
             if(_currentWeatherState.value.value != null) {
                 saveCityUseCase(_currentWeatherState.value.value!!.toShortWeatherInfo())
+                _screenEvents.value = ScreenEvent.ShowToast("City Saved")
             } else {
-                _screenEvents.value = ScreenEvent.ShowSnackBar("Couldn't refresh")
+                _screenEvents.value = ScreenEvent.ShowToast("Couldn't save city")
             }
         }
     }

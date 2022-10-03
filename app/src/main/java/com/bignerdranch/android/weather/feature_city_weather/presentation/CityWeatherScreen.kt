@@ -1,8 +1,12 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation
 
-import androidx.compose.foundation.*
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -21,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +35,7 @@ import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ClickableIcon
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
+import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -56,6 +62,7 @@ const val CITY_TEXT_ID = "city_text"
 const val REFRESH_BUTTON_ID = "refresh_button_id"
 const val COUNTRY_TEXT_ID = "country_button_id"
 
+//@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CityWeatherScreen(
     viewModel: CityWeatherViewModel
@@ -92,6 +99,24 @@ fun CityWeatherScreen(
             top.linkTo(parent.top)
             bottom.linkTo(parent.bottom)
             end.linkTo(parent.end)
+        }
+    }
+    log("composition")
+    val context = LocalContext.current
+    val screenEventsState = viewModel.screenEvents.collectAsState()
+
+    DisposableEffect(screenEventsState.value) {
+        var toast: Toast? = null
+        when(val event = screenEventsState.value) {
+            is ScreenEvent.ShowToast -> {
+                toast = Toast.makeText(context, event.message, Toast.LENGTH_SHORT)
+                toast.show()
+            }
+            else -> {}
+        }
+
+        onDispose {
+            toast?.cancel()
         }
     }
 
@@ -149,7 +174,7 @@ fun CityWeatherScreen(
                                 .layoutId(ADD_BUTTON_ID),
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add city",
-                            onClick = {}
+                            onClick = { viewModel.saveCity() }
                         )
                         Text(
                             modifier = Modifier
@@ -178,7 +203,6 @@ fun CityWeatherScreen(
                         )
                     }
                 }
-
                 Column(
                     // temp and desc column
                     modifier = Modifier
