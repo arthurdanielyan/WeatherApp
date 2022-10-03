@@ -7,6 +7,4 @@ const val NO_INTERNET_MESSAGE = "Check your internet connection"
 
 const val ARG_CITY = "passing_city_key"
 
-const val LOAD_MY_CITIES_BY = 5
-
 inline fun log(log: Any?) = Log.d("myLogs", log.toString())

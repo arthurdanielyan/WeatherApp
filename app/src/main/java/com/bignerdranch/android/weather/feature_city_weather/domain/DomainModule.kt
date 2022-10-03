@@ -8,32 +8,32 @@ import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.Sav
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object DomainModule {
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideGetCityWeatherUseCase(cityWeatherRepository: CityWeatherRepository) =
         GetCityWeatherUseCase(cityWeatherRepository, Dispatchers.Default)
 
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideGetIconUseCase(cityWeatherRepository: CityWeatherRepository) =
         GetIconUseCase(cityWeatherRepository, Dispatchers.Default)
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideGet3DaysForecastUseCase(cityWeatherRepository: CityWeatherRepository) =
         Get3DaysForecastUseCase(cityWeatherRepository, Dispatchers.Default)
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideSaveCityUseCase(cityWeatherRepository: CityWeatherRepository) =
         SaveCityUseCase(cityWeatherRepository, Dispatchers.Default)
 }

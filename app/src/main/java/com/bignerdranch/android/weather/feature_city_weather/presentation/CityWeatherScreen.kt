@@ -41,6 +41,8 @@ import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 //@Preview(showBackground = true)
@@ -101,22 +103,24 @@ fun CityWeatherScreen(
             end.linkTo(parent.end)
         }
     }
-    log("composition")
+
+
     val context = LocalContext.current
-    val screenEventsState = viewModel.screenEvents.collectAsState()
 
-    DisposableEffect(screenEventsState.value) {
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
         var toast: Toast? = null
-        when(val event = screenEventsState.value) {
-            is ScreenEvent.ShowToast -> {
-                toast = Toast.makeText(context, event.message, Toast.LENGTH_SHORT)
-                toast.show()
+        scope.launch {
+            viewModel.screenEvents.collectLatest { event ->
+                when (event) {
+                    is ScreenEvent.ShowToast -> {
+                        toast?.cancel()
+                        toast = Toast.makeText(context, event.message, Toast.LENGTH_SHORT)
+                        toast?.show()
+                    }
+                    else -> {}
+                }
             }
-            else -> {}
-        }
-
-        onDispose {
-            toast?.cancel()
         }
     }
 

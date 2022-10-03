@@ -24,103 +24,108 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.log
-import com.bignerdranch.android.weather.feature_search_city.presentation.ShortWeatherInfoState
+import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CityWeatherCard(
-    weatherInfo: ShortWeatherInfoState,
-    onClick: (city: String) -> Unit
+    modifier: Modifier = Modifier,
+    weatherInfo: ShortWeatherInfo,
+    onClick: (/*city: String*/) -> Unit
 ) {
-    if (weatherInfo.shortWeatherInfo != null) { // This is an assertion. state.currentWeather is never null here
-        val touchScale = 0.9f
-        var targetScale by remember { mutableStateOf(1f) }
-        val touchAnimation by animateFloatAsState(
-            targetValue = targetScale,
-            animationSpec = tween(
-                durationMillis = 100
-            )
+    val touchScale = 0.9f
+    var targetScale by remember { mutableStateOf(1f) }
+    val touchAnimation by animateFloatAsState(
+        targetValue = targetScale,
+        animationSpec = tween(
+            durationMillis = 100
         )
-        var cardWidth by remember { mutableStateOf(0f) }
-        var cardHeight by remember { mutableStateOf(0f) }
-        Box(
+    )
+    var cardWidth by remember { mutableStateOf(0f) }
+    var cardHeight by remember { mutableStateOf(0f) }
+    Box(
+        modifier = modifier
+            .background(
+                color = MaterialTheme.colors.background,
+            )
+            .fillMaxWidth()
+            .scale(touchAnimation)
+    ) {
+        var isSwipedBackToCard by remember { mutableStateOf(false) }
+        Column(
             modifier = Modifier
-                .background(
-                    color = MaterialTheme.colors.background,
-                )
                 .fillMaxWidth()
-                .scale(touchAnimation)
-        ) {
-            var isSwipedBackToCard by remember { mutableStateOf(false) }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(MaterialTheme.colors.defaultGradientStart.toArgb()),
-                                Color(MaterialTheme.colors.defaultGradientEnd.toArgb())
-                            ),
-                            start = Offset.Zero,
-                            end = Offset.Infinite
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(MaterialTheme.colors.defaultGradientStart.toArgb()),
+                            Color(MaterialTheme.colors.defaultGradientEnd.toArgb())
                         ),
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .padding(8.dp)
-                    .onGloballyPositioned {
-                        val windowBounds = it.boundsInParent()
-                        cardWidth = windowBounds.size.width
-                        cardHeight = windowBounds.size.height
+                        start = Offset.Zero,
+                        end = Offset.Infinite
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .padding(8.dp)
+                .onGloballyPositioned {
+                    val windowBounds = it.boundsInParent()
+                    cardWidth = windowBounds.size.width
+                    cardHeight = windowBounds.size.height
+                }
+                .pointerInteropFilter { touch: MotionEvent ->
+                    log("touch")
+                    if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
+                        targetScale = touchScale
+                        isSwipedBackToCard = false
+                        log("touch inside")
                     }
-                    .pointerInteropFilter { touch: MotionEvent ->
-                        log("touch")
+                    else {
+                        targetScale = 1f
+                        isSwipedBackToCard = true
+                        log("touch outside")
+                    }
+                    log("$cardWidth $cardHeight")
+
+                    log(touch.actionMasked)
+                    if(touch.actionMasked == MotionEvent.ACTION_UP) {
+                        targetScale = 1f
                         if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
-                            targetScale = touchScale
-                            isSwipedBackToCard = false
-                            log("touch inside")
+                            onClick(/*weatherInfo.city*/)
+                            log("onClick")
                         }
-                        else {
-                            targetScale = 1f
-                            isSwipedBackToCard = true
-                            log("touch outside")
-                        }
-
-                        if(touch.actionMasked == MotionEvent.ACTION_UP || touch.actionMasked == MotionEvent.ACTION_CANCEL) {
-                            targetScale = 1f
-                            if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
-                                onClick(weatherInfo.shortWeatherInfo.city)
-                            }
-                            isSwipedBackToCard = false
-                        }
-
-                        true
+                        isSwipedBackToCard = false
+                    } else if(touch.actionMasked == MotionEvent.ACTION_CANCEL) {
+                        targetScale = 1f
+//                        isSwipedBackToCard = false
                     }
+
+                    true
+                }
+        ) {
+            Text(
+                text = weatherInfo.city,
+                fontSize = 28.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = weatherInfo.shortWeatherInfo.city,
-                    fontSize = 28.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    text = weatherInfo.country,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Start
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = weatherInfo.shortWeatherInfo.country,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Start
-                    )
-                    Text(
-                        text = "${weatherInfo.shortWeatherInfo.tempInCelsius.toIntIfPossible()} °C",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.End
-                    )
-                }
+                Text(
+                    text = "${weatherInfo.tempInCelsius.toIntIfPossible()} °C",
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.End
+                )
             }
         }
     }

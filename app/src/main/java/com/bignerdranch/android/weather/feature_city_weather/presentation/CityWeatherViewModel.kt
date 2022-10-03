@@ -16,8 +16,10 @@ import com.bignerdranch.android.weather.feature_city_weather.presentation.state_
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ShortForecastState
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.WeatherIconState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,8 +41,8 @@ class CityWeatherViewModel @Inject constructor(
     private val _shortForecastState = MutableStateFlow(ShortForecastState())
     val shortForecastState = _shortForecastState.asStateFlow()
 
-    private val _screenEvents: MutableStateFlow<ScreenEvent> = MutableStateFlow(ScreenEvent.Nothing)
-    val screenEvents = _screenEvents.asStateFlow()
+    private val _screenEventsChannel: Channel<ScreenEvent> = Channel()
+    val screenEvents = _screenEventsChannel.receiveAsFlow()
 
     init {
         savedStateHandle.get<String>(ARG_CITY)?.let {
@@ -122,9 +124,9 @@ class CityWeatherViewModel @Inject constructor(
         viewModelScope.launch {
             if(_currentWeatherState.value.value != null) {
                 saveCityUseCase(_currentWeatherState.value.value!!.toShortWeatherInfo())
-                _screenEvents.value = ScreenEvent.ShowToast("City Saved")
+                _screenEventsChannel.send(ScreenEvent.ShowToast("City Saved"))
             } else {
-                _screenEvents.value = ScreenEvent.ShowToast("Couldn't save city")
+                _screenEventsChannel.send(ScreenEvent.ShowToast("Couldn't save city"))
             }
         }
     }

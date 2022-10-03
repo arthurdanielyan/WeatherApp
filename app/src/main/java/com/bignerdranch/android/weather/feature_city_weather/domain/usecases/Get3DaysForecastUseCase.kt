@@ -1,6 +1,5 @@
 package com.bignerdranch.android.weather.feature_city_weather.domain.usecases
 
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.ShortForecast
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
@@ -22,7 +21,6 @@ class Get3DaysForecastUseCase(
             var newFlow = resultFlow
             newFlow.collect { result ->
                 if (result !is Result.Success) return@collect
-                log("from UseCase result is success")
                 val shortForecast = result.data!!
                 shortForecast.forecastDays.forEach { forecastDay ->
                     val day = forecastDay.day.toInt()
