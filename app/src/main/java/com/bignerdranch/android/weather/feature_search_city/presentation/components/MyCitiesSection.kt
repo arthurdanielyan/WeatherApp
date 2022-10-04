@@ -1,7 +1,10 @@
 package com.bignerdranch.android.weather.feature_search_city.presentation.components
 
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,14 +21,14 @@ fun MyCitiesSection(
     Text(text = "My Cities")
     Spacer(modifier = Modifier.height(8.dp))
     Divider(modifier = Modifier.fillMaxWidth())
-    Column(
+    if(myCities.isNotEmpty())
+    LazyColumn(
         modifier = modifier
-            .focusable(false)
     ) {
-        for(city in myCities) {
+        items(myCities.size) {
             CityWeatherCard(
                 modifier = Modifier.padding(vertical = 12.dp),
-                weatherInfo = city,
+                weatherInfo = myCities[it],
                 onClick = onClick
             )
         }

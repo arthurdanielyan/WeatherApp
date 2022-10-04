@@ -14,11 +14,11 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_background</item>
-        <item name="colorPrimary">?attr/colorPrimary</item>
-        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>
-        <item name="colorAccent">?attr/colorAccent</item>
-        <item name="android:statusBarColor">?attr/colorAccent</item>
-    </style>
+<!--    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">-->
+<!--        <item name="android:windowBackground">@drawable/splash_background</item>-->
+<!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">?attr/colorAccent</item>-->
+<!--        <item name="android:statusBarColor">?attr/colorAccent</item>-->
+<!--    </style>-->
 </resources>

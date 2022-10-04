@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
@@ -33,7 +32,7 @@ import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 fun CityWeatherCard(
     modifier: Modifier = Modifier,
     weatherInfo: ShortWeatherInfo,
-    onClick: (/*city: String*/) -> Unit
+    onClick: () -> Unit
 ) {
     val touchScale = 0.9f
     var targetScale by remember { mutableStateOf(1f) }
@@ -75,25 +74,19 @@ fun CityWeatherCard(
                     cardHeight = windowBounds.size.height
                 }
                 .pointerInteropFilter { touch: MotionEvent ->
-                    log("touch")
                     if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
                         targetScale = touchScale
                         isSwipedBackToCard = false
-                        log("touch inside")
                     }
                     else {
                         targetScale = 1f
                         isSwipedBackToCard = true
-                        log("touch outside")
                     }
-                    log("$cardWidth $cardHeight")
 
-                    log(touch.actionMasked)
                     if(touch.actionMasked == MotionEvent.ACTION_UP) {
                         targetScale = 1f
                         if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
-                            onClick(/*weatherInfo.city*/)
-                            log("onClick")
+                            onClick()
                         }
                         isSwipedBackToCard = false
                     } else if(touch.actionMasked == MotionEvent.ACTION_CANCEL) {

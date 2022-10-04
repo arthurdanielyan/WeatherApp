@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.presentation.Screen
-import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.CityWeatherCard
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.MyCitiesSection
 
@@ -35,7 +34,7 @@ fun SearchCityScreen(
     navController: NavController,
     viewModel: SearchCityViewModel/* = getViewModel()*/
 ) {
-    val currentWeather = viewModel.state.value
+    val currentWeather = viewModel.searchedCityWeather.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     var noInternet by remember { mutableStateOf(false) }
@@ -94,16 +93,16 @@ fun SearchCityScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (currentWeather.shortWeatherInfo != null) {
+        if (currentWeather.value.shortWeatherInfo != null) {
             CityWeatherCard(
                 modifier = Modifier.padding(vertical = 25.dp),
-                weatherInfo = currentWeather.shortWeatherInfo,
+                weatherInfo = currentWeather.value.shortWeatherInfo!!,
                 onClick = {
                     keyboardController?.hide()
-                    navController.navigate(Screen.CityWeatherScreen.route + "/${currentWeather.shortWeatherInfo.city}")
+                    navController.navigate(Screen.CityWeatherScreen.route + "/${currentWeather.value.shortWeatherInfo!!.city}")
                 }
             )
-        } else if (currentWeather.isLoading) {
+        } else if (currentWeather.value.isLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,7 +115,7 @@ fun SearchCityScreen(
                     textAlign = TextAlign.Center
                 )
             }
-        } else if (currentWeather.error.isNotEmpty() && searchCityTfState.isNotEmpty()) {
+        } else if (currentWeather.value.error.isNotEmpty() && searchCityTfState.isNotEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,23 +123,20 @@ fun SearchCityScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = currentWeather.error,
+                    text = currentWeather.value.error,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center
                 )
             }
-            if(currentWeather.error == NO_INTERNET_MESSAGE)
+            if(currentWeather.value.error == NO_INTERNET_MESSAGE)
             noInternet = true
         }
         MyCitiesSection(
             modifier = Modifier.fillMaxWidth(),
-            myCities = listOf(
-                ShortWeatherInfo("Amsterdam", "Netherlands", 30.0, 80.0),
-                ShortWeatherInfo("Warshaw", "Sweden", 20.0, 40.0)
-            ),
+            myCities = viewModel.myCities.collectAsState().value.myCities ?: listOf(),
             onClick = {
-                keyboardController?.hide()
-                navController.navigate(Screen.CityWeatherScreen.route + "/${currentWeather.shortWeatherInfo!!.city}")
+//                keyboardController?.hide()
+//                navController.navigate(Screen.CityWeatherScreen.route + "/${currentWeather.shortWeatherInfo!!.city}")
             }
         )
     }
