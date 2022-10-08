@@ -8,7 +8,7 @@ import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.api.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.toCityWeather
 import com.bignerdranch.android.weather.core.data.dto.toShortForecast
-import com.bignerdranch.android.weather.core.data.room.AppDb
+import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.ShortForecast
@@ -26,12 +26,12 @@ import javax.inject.Inject
 
 class CityWeatherRepositoryImpl @Inject constructor (
     private val weatherApi: WeatherApi,
-    appDatabase: AppDb
+    private val myCitiesDao: MyCitiesDao
 ) : CityWeatherRepository {
 
     private lateinit var iconLink: String
 
-    private val myCitiesDao = appDatabase.myCitiesDao
+//    private val myCitiesDao = appDatabase.myCitiesDao
 
     override suspend fun getWeather(city: String): Flow<Result<CityWeather>> = flow {
         try {

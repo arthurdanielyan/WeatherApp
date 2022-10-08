@@ -3,6 +3,7 @@ package com.bignerdranch.android.weather.core.di
 import android.content.Context
 import androidx.room.Room
 import com.bignerdranch.android.weather.core.data.room.AppDb
+import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,10 +17,10 @@ object RoomModule {
 
     @Provides
     @Singleton
-    fun provideRoomDatabase(@ApplicationContext applicationContext: Context): AppDb =
+    fun provideMyCitiesDao(@ApplicationContext applicationContext: Context): MyCitiesDao =
         Room.databaseBuilder(
             applicationContext,
             AppDb::class.java,
             "weather_app_database"
-        ).build()
+        ).build().myCitiesDao
 }

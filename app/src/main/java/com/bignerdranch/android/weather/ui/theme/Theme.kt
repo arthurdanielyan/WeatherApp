@@ -11,7 +11,7 @@ private val DarkColorPalette = darkColors(
     secondary = Teal200
 )
 
-private val LightColorPalette = DarkColorPalette/*lightColors(
+private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
     secondary = Teal200
@@ -24,7 +24,7 @@ private val LightColorPalette = DarkColorPalette/*lightColors(
     onBackground = Color.Black,
     onSurface = Color.Black,
     */
-)*/
+)
 
 val Colors.defaultGradientStart: Color
     get() = Color(0xFF749BFF)
@@ -38,12 +38,8 @@ val Colors.defaultTint: Color
    get() = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 
 @Composable
-fun WeatherTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
+fun WeatherTheme(content: @Composable () -> Unit) {
+    val colors = DarkColorPalette
 
     MaterialTheme(
         colors = colors,

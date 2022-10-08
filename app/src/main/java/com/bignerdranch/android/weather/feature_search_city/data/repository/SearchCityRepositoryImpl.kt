@@ -3,7 +3,7 @@ package com.bignerdranch.android.weather.feature_search_city.data.repository
 import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.api.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.toShortWeatherInfo
-import com.bignerdranch.android.weather.core.data.room.AppDb
+import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.feature_search_city.domain.repository.SearchCityRepository
@@ -15,9 +15,10 @@ import javax.inject.Inject
 
 class SearchCityRepositoryImpl @Inject constructor(
     private val weatherApi: WeatherApi,
-    myCitiesDb: AppDb
+    private val myCitiesDao: MyCitiesDao
 ) : SearchCityRepository {
 
+    @Suppress("SENSELESS_COMPARISON")
     override suspend fun searchCity(cityName: String): Flow<Result<ShortWeatherInfo>> = flow {
         try {
             emit(Result.Loading())
@@ -31,7 +32,7 @@ class SearchCityRepositoryImpl @Inject constructor(
         }
     }
 
-    private val myCitiesDao = myCitiesDb.myCitiesDao
+//    private val myCitiesDao = myCitiesDb.myCitiesDao
 
     override suspend fun getCities(): Flow<List<ShortWeatherInfo>> = myCitiesDao.getSavedCities()
 }
