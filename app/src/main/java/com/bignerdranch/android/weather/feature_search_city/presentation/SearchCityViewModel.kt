@@ -2,7 +2,6 @@ package com.bignerdranch.android.weather.feature_search_city.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.feature_search_city.domain.usecases.GetMyCitiesUseCase
@@ -13,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,7 +31,6 @@ class SearchCityViewModel @Inject constructor(
     private var searching: Job? = null
 
     init {
-        log("SearchVCityViewModel init")
         getMyCities()
     }
 
@@ -68,31 +67,12 @@ class SearchCityViewModel @Inject constructor(
 
     private fun getMyCities() {
         viewModelScope.launch {
-            getMyCitiesUseCase().collect { result ->
-                when(result) {
-                    is Result.Loading -> {
-                        _myCities.value = MyCitiesState(
-                            isLoading = true,
-                            myCities = null,
-                            error = ""
-                        )
-                    }
-                    is Result.Success -> {
-                        _myCities.value = MyCitiesState(
-                            isLoading = false,
-                            myCities = result.data!!,
-                            error = ""
-                        )
-                        log("myCitiesLoaded")
-                    }
-                    is Result.Error -> {
-                        _myCities.value = MyCitiesState(
-                            isLoading = false,
-                            myCities = null,
-                            error = result.message!!
-                        )
-                    }
-                }
+            getMyCitiesUseCase().collectLatest { result ->
+                _myCities.value = MyCitiesState(
+                    isLoading = false,
+                    myCities = result,
+                    error = ""
+                )
             }
         }
     }

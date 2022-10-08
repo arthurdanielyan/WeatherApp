@@ -32,7 +32,7 @@ import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 fun CityWeatherCard(
     modifier: Modifier = Modifier,
     weatherInfo: ShortWeatherInfo,
-    onClick: () -> Unit
+    onClick: (city: String) -> Unit
 ) {
     val touchScale = 0.9f
     var targetScale by remember { mutableStateOf(1f) }
@@ -86,7 +86,7 @@ fun CityWeatherCard(
                     if(touch.actionMasked == MotionEvent.ACTION_UP) {
                         targetScale = 1f
                         if(touch.x in 0f..cardWidth && touch.y in 0f..cardHeight && !isSwipedBackToCard) {
-                            onClick()
+                            onClick(weatherInfo.city)
                         }
                         isSwipedBackToCard = false
                     } else if(touch.actionMasked == MotionEvent.ACTION_CANCEL) {

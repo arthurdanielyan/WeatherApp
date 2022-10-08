@@ -8,5 +8,5 @@ interface SearchCityRepository {
 
     suspend fun searchCity(cityName: String): Flow<Result<ShortWeatherInfo>>
 
-    suspend fun getCities(): Flow<Result<List<ShortWeatherInfo>>>
+    suspend fun getCities(): Flow<List<ShortWeatherInfo>>
 }

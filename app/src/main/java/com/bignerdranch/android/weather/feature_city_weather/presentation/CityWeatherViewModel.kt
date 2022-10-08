@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.weather.core.ARG_CITY
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.toShortWeatherInfo
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.Get3DaysForecastUseCase
@@ -115,7 +114,6 @@ class CityWeatherViewModel @Inject constructor(
 
     private fun getIcon() {
         viewModelScope.launch {
-            log("getting icon")
             _weatherIcon.value = WeatherIconState(getIconUseCase())
         }
     }

@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOutHorizontally
 
 const val duration = 300
 
+
 val slideInLeft = slideInHorizontally (
     animationSpec = tween(duration),
     initialOffsetX = {
@@ -35,3 +36,12 @@ val slideInRight = slideInHorizontally (
         -it/2
     }
 ) + fadeIn(tween(duration))
+
+const val cityCardAppearanceDuration = 300
+
+val cityCardAppearance = slideInHorizontally (
+    animationSpec = tween(cityCardAppearanceDuration),
+    initialOffsetX = {
+        it/2
+    }
+) + fadeIn(tween(cityCardAppearanceDuration))

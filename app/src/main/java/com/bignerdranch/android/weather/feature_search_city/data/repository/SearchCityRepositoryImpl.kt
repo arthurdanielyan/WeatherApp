@@ -33,9 +33,5 @@ class SearchCityRepositoryImpl @Inject constructor(
 
     private val myCitiesDao = myCitiesDb.myCitiesDao
 
-    override suspend fun getCities(): Flow<Result<List<ShortWeatherInfo>>> = flow {
-        emit(Result.Loading())
-        val myCities = myCitiesDao.getSavedCities()
-        emit(Result.Success(myCities))
-    }
+    override suspend fun getCities(): Flow<List<ShortWeatherInfo>> = myCitiesDao.getSavedCities()
 }

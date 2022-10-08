@@ -1,6 +1,7 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ClickableIcon
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
@@ -45,26 +45,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-//@Preview(showBackground = true)
-//@Composable
-//fun CityWeatherScreenPreview() {
-//    WeatherTheme {
-//        Surface(
-//            modifier = Modifier
-//                .fillMaxSize(),
-//            color = MaterialTheme.colors.background
-//        ) {
-//            CityWeatherScreen("")
-//        }
-//    }
-//}
-
 const val ADD_BUTTON_ID = "add_button"
 const val CITY_TEXT_ID = "city_text"
 const val REFRESH_BUTTON_ID = "refresh_button_id"
 const val COUNTRY_TEXT_ID = "country_button_id"
 
-//@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CityWeatherScreen(
     viewModel: CityWeatherViewModel
@@ -124,6 +109,7 @@ fun CityWeatherScreen(
         }
     }
 
+    var hasAdded by remember { mutableStateOf(false) }
     val isRefreshing by viewModel.shortForecastState.collectAsState()
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing.isLoading),
@@ -178,7 +164,10 @@ fun CityWeatherScreen(
                                 .layoutId(ADD_BUTTON_ID),
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add city",
-                            onClick = { viewModel.saveCity() }
+                            onClick = {
+                                viewModel.saveCity()
+                                hasAdded = true
+                            }
                         )
                         Text(
                             modifier = Modifier
@@ -202,7 +191,6 @@ fun CityWeatherScreen(
                                 weatherState.value?.city?.let {
                                     viewModel.getCityWeather(it)
                                 }
-                                log("updating")
                             }
                         )
                     }

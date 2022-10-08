@@ -28,8 +28,8 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val searchCityViewModel by viewModels<SearchCityViewModel>()
 
-        val searchCityViewModel: SearchCityViewModel by viewModels()
         installSplashScreen().apply {
             setKeepOnScreenCondition {
                 searchCityViewModel.myCities.value.isLoading
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.CityWeatherScreen.route + "/{$ARG_CITY}",
                             enterTransition = { slideInLeft },
-                            exitTransition = { slideOutRight }
+                            exitTransition = { slideOutRight },
                         ) {
                             CityWeatherScreen(hiltViewModel())
                         }
