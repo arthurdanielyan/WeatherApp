@@ -1,22 +1,18 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -109,170 +105,196 @@ fun CityWeatherScreen(
         }
     }
 
-    var hasAdded by remember { mutableStateOf(false) }
     val isRefreshing by viewModel.shortForecastState.collectAsState()
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing.isLoading),
-        onRefresh = {
-            weatherState.value?.city?.let {
-                viewModel.getCityWeather(it)
-            }
-        },
-        indicator = { state, trigger ->
-            SwipeRefreshIndicator(
-                // Pass the SwipeRefreshState + trigger through
-                state = state,
-                refreshTriggerDistance = trigger,
-                // Enable the scale animation
-                scale = true,
-                // Change the color and shape
-                backgroundColor = MaterialTheme.colors.defaultGradientEnd,
-                shape = CircleShape,
-            )
-        }
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(MaterialTheme.colors.defaultGradientStart.toArgb()),
-                            Color(MaterialTheme.colors.defaultGradientEnd.toArgb())
-                        ),
-                        start = Offset.Zero,
-                        end = Offset.Infinite
-                    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(MaterialTheme.colors.defaultGradientStart.toArgb()),
+                        Color(MaterialTheme.colors.defaultGradientEnd.toArgb())
+                    ),
+                    start = Offset.Zero,
+                    end = Offset.Infinite
                 )
+            )
+    ) {
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing.isLoading),
+            onRefresh = {
+                weatherState.value?.city?.let {
+                    viewModel.getCityWeather(it)
+                }
+            },
+            indicator = { state, trigger ->
+                SwipeRefreshIndicator(
+                    // Pass the SwipeRefreshState + trigger through
+                    state = state,
+                    refreshTriggerDistance = trigger,
+                    // Enable the scale animation
+                    scale = true,
+                    // Change the color and shape
+                    backgroundColor = MaterialTheme.colors.defaultGradientEnd,
+                    shape = CircleShape,
+                )
+            }
         ) {
-            Column(
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
+
             ) {
-                Row( // top bar row
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp)
                 ) {
-                    ConstraintLayout(
+                    Row( // top bar row
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        constraintSet = constraintsTopBar
+                            .fillMaxWidth()
                     ) {
-                        ClickableIcon(
-                            modifier = Modifier
-                                .layoutId(ADD_BUTTON_ID),
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add city",
-                            onClick = {
-                                viewModel.saveCity()
-                                hasAdded = true
-                            }
-                        )
-                        Text(
-                            modifier = Modifier
-                                .layoutId(CITY_TEXT_ID),
-                            text = weatherState.value?.city ?: "Loading…",
-                            style = MaterialTheme.typography.h4
-                        )
-                        Text(
-                            modifier = Modifier
-                                .layoutId(COUNTRY_TEXT_ID)
-                                .padding(top = 8.dp),
-                            text = weatherState.value?.country ?: "Loading…",
-                            fontSize = 15.sp
-                        )
-                        ClickableIcon(
-                            modifier = Modifier
-                                .layoutId(REFRESH_BUTTON_ID),
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Reload",
-                            onClick = {
-                                weatherState.value?.city?.let {
-                                    viewModel.getCityWeather(it)
-                                }
-                            }
-                        )
-                    }
-                }
-                Column(
-                    // temp and desc column
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    if (weatherState.value != null) {
-                        Spacer(Modifier.height(36.dp))
-                        Text(
-                            text = "${weatherState.value.tempInCelsius.toIntIfPossible()}°C",
-                            style = MaterialTheme.typography.h1
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
+                        ConstraintLayout(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                            constraintSet = constraintsTopBar
                         ) {
-                            var descTextHeight by remember { mutableStateOf(0) }
-                            Text(
-                                text = weatherState.value.description,
-                                fontSize = 25.sp,
+                            ClickableIcon(
                                 modifier = Modifier
-                                    .onGloballyPositioned {
-                                        descTextHeight =
-                                            it.boundsInWindow().size.height.roundToInt()
-                                    }
+                                    .layoutId(ADD_BUTTON_ID),
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add city",
+                                onClick = {
+                                    viewModel.saveCity()
+                                }
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            val weatherIcon = viewModel.weatherIcon.collectAsState().value
-                            if (weatherIcon.value != null)
-                                Image(
-                                    bitmap = weatherIcon.value.asImageBitmap(),
-                                    contentDescription = weatherState.value.description,
+                            Text(
+                                modifier = Modifier
+                                    .layoutId(CITY_TEXT_ID),
+                                text = weatherState.value?.city ?: "Loading…",
+                                style = MaterialTheme.typography.h4
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .layoutId(COUNTRY_TEXT_ID)
+                                    .padding(top = 8.dp),
+                                text = weatherState.value?.country ?: "Loading…",
+                                fontSize = 15.sp
+                            )
+                            ClickableIcon(
+                                modifier = Modifier
+                                    .layoutId(REFRESH_BUTTON_ID),
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Reload",
+                                onClick = {
+                                    weatherState.value?.city?.let {
+                                        viewModel.getCityWeather(it)
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    Column(
+                        // temp and desc column
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        if (weatherState.value != null) {
+                            Spacer(Modifier.height(36.dp))
+                            Text(
+                                text = "${weatherState.value.tempInCelsius.toIntIfPossible()}°C",
+                                style = MaterialTheme.typography.h1
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                var descTextHeight by remember { mutableStateOf(0) }
+                                Text(
+                                    text = weatherState.value.description,
+                                    fontSize = 25.sp,
                                     modifier = Modifier
-                                        .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
-                                    contentScale = ContentScale.Crop
+                                        .onGloballyPositioned {
+                                            descTextHeight =
+                                                it.boundsInWindow().size.height.roundToInt()
+                                        }
                                 )
-                            else
-                                CircularProgressIndicator(
-                                    color = Color(0xFF1F3C88),
-                                    modifier = Modifier
-                                        .size((descTextHeight / LocalDensity.current.density).dp - 8.dp),
-                                    strokeWidth = 3.dp
-                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                val weatherIcon = viewModel.weatherIcon.collectAsState().value
+                                if (weatherIcon.value != null)
+                                    Image(
+                                        bitmap = weatherIcon.value.asImageBitmap(),
+                                        contentDescription = weatherState.value.description,
+                                        modifier = Modifier
+                                            .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                else
+                                    CircularProgressIndicator(
+                                        color = Color(0xFF1F3C88),
+                                        modifier = Modifier
+                                            .size((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                                        strokeWidth = 3.dp
+                                    )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(36.dp))
+                    val shortForecastState by viewModel.shortForecastState.collectAsState()
+                    if (shortForecastState.value != null) {
+                        val shortForecast = shortForecastState.value!!
+                        Column( // 3 days column
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            ExtremePointsWeatherCard(
+                                minTemp = shortForecast.forecastDays[0].minTempInCelsius,
+                                maxTemp = shortForecast.forecastDays[0].maxTempInCelsius,
+                                description = shortForecast.forecastDays[0].description,
+                                day = shortForecast.forecastDays[0].day
+                            )
+                            ExtremePointsWeatherCard(
+                                minTemp = shortForecast.forecastDays[1].minTempInCelsius,
+                                maxTemp = shortForecast.forecastDays[1].maxTempInCelsius,
+                                description = shortForecast.forecastDays[1].description,
+                                day = shortForecast.forecastDays[1].day
+                            )
+                            ExtremePointsWeatherCard(
+                                minTemp = shortForecast.forecastDays[2].minTempInCelsius,
+                                maxTemp = shortForecast.forecastDays[2].maxTempInCelsius,
+                                description = shortForecast.forecastDays[2].description,
+                                day = shortForecast.forecastDays[2].day
+                            )
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(36.dp))
-                val shortForecastState by viewModel.shortForecastState.collectAsState()
-                if (shortForecastState.value != null) {
-                    val shortForecast = shortForecastState.value!!
-                    Column( // 3 days column
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        ExtremePointsWeatherCard(
-                            minTemp = shortForecast.forecastDays[0].minTempInCelsius,
-                            maxTemp = shortForecast.forecastDays[0].maxTempInCelsius,
-                            description = shortForecast.forecastDays[0].description,
-                            day = shortForecast.forecastDays[0].day
-                        )
-                        ExtremePointsWeatherCard(
-                            minTemp = shortForecast.forecastDays[1].minTempInCelsius,
-                            maxTemp = shortForecast.forecastDays[1].maxTempInCelsius,
-                            description = shortForecast.forecastDays[1].description,
-                            day = shortForecast.forecastDays[1].day
-                        )
-                        ExtremePointsWeatherCard(
-                            minTemp = shortForecast.forecastDays[2].minTempInCelsius,
-                            maxTemp = shortForecast.forecastDays[2].maxTempInCelsius,
-                            description = shortForecast.forecastDays[2].description,
-                            day = shortForecast.forecastDays[2].day
-                        )
-                    }
-                }
             }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(MaterialTheme.colors.defaultGradientEnd.toArgb()),
+                            Color(MaterialTheme.colors.defaultGradientStart.toArgb())
+                        ),
+                        start = Offset.Zero,
+                        end = Offset.Infinite
+                    ),
+                    shape = RoundedCornerShape(9999.dp)
+                )
+                .clip(RoundedCornerShape(9999.dp))
+                .clickable {  }
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("5 days forecast")
         }
     }
 }

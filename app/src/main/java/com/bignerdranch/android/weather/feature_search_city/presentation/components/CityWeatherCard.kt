@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
@@ -34,6 +35,7 @@ fun CityWeatherCard(
     weatherInfo: ShortWeatherInfo,
     onClick: (city: String) -> Unit
 ) {
+    log("CityWeatherCard")
     val touchScale = 0.9f
     var targetScale by remember { mutableStateOf(1f) }
     val touchAnimation by animateFloatAsState(

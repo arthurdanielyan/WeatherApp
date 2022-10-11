@@ -30,9 +30,11 @@ fun MyCitiesSection(
     Spacer(modifier = Modifier.height(8.dp))
     Divider(modifier = Modifier.fillMaxWidth())
 
-    val visibleState = remember { MutableTransitionState(false).apply {
-        targetState  = true
-    } }
+    val visibleState = remember {
+        MutableTransitionState(false).apply {
+            targetState = true
+        }
+    }
     var itemCount by remember { mutableStateOf(0) }
     var animPlayed by rememberSaveable { mutableStateOf(false) }
     log("anim played $animPlayed")
@@ -53,12 +55,12 @@ fun MyCitiesSection(
 
     log("$itemCountAnim")
 
-    if(myCities.isNotEmpty()) {
+    if (myCities.isNotEmpty()) {
         log("building lazy column")
         LazyColumn(
             modifier = modifier
         ) {
-            items(if(!animPlayed) itemCountAnim else myCities.size) {
+            items(if (!animPlayed) itemCountAnim else myCities.size) {
                 AnimatedVisibility(
                     visibleState = visibleState,
                     enter = cityCardAppearance,
