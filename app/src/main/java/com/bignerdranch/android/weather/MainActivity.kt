@@ -13,6 +13,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bignerdranch.android.weather.core.ARG_CITY
 import com.bignerdranch.android.weather.core.presentation.*
+import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.FiveDaysForecastScreen
 import com.bignerdranch.android.weather.feature_city_weather.presentation.CityWeatherScreen
 import com.bignerdranch.android.weather.feature_search_city.presentation.SearchCityScreen
 import com.bignerdranch.android.weather.feature_search_city.presentation.SearchCityViewModel
@@ -61,7 +62,15 @@ class MainActivity : ComponentActivity() {
                             enterTransition = { slideInLeft },
                             exitTransition = { slideOutRight },
                         ) {
-                            CityWeatherScreen(hiltViewModel())
+                            CityWeatherScreen(hiltViewModel(), navController)
+                        }
+
+                        composable(
+                            route = Screen.FiveDaysForecast.route + "/{$ARG_CITY}",
+                            enterTransition = { slideInLeft },
+                            exitTransition = { slideOutRight }
+                        ) {
+                            FiveDaysForecastScreen()
                         }
                     }
                 }

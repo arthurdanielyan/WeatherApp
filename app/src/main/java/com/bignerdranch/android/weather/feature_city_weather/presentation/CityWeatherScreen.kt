@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.navigation.NavController
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
+import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ClickableIcon
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
@@ -48,7 +50,8 @@ const val COUNTRY_TEXT_ID = "country_button_id"
 
 @Composable
 fun CityWeatherScreen(
-    viewModel: CityWeatherViewModel
+    viewModel: CityWeatherViewModel,
+    navController: NavController
 ) {
     val weatherState = viewModel.currentWeatherState.collectAsState().value
 
@@ -142,7 +145,6 @@ fun CityWeatherScreen(
         ) {
             Box(
                 modifier = Modifier
-
             ) {
                 Column(
                     modifier = Modifier
@@ -195,7 +197,7 @@ fun CityWeatherScreen(
                         }
                     }
                     Column(
-                        // temp and desc column
+                        // temp and description column
                         modifier = Modifier
                             .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -290,7 +292,10 @@ fun CityWeatherScreen(
                     shape = RoundedCornerShape(9999.dp)
                 )
                 .clip(RoundedCornerShape(9999.dp))
-                .clickable {  }
+                .clickable {
+                    if(weatherState.value != null)
+                    navController.navigate(Screen.FiveDaysForecast.route + "/${weatherState.value.city}")
+                }
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {

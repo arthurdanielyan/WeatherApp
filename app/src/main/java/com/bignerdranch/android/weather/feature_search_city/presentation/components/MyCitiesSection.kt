@@ -52,7 +52,6 @@ fun MyCitiesSection(
         }
     )
 
-
     log("$itemCountAnim")
 
     if (myCities.isNotEmpty()) {
