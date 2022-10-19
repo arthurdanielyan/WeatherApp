@@ -257,19 +257,19 @@ fun CityWeatherScreen(
                                 minTemp = shortForecast.forecastDays[0].minTempInCelsius,
                                 maxTemp = shortForecast.forecastDays[0].maxTempInCelsius,
                                 description = shortForecast.forecastDays[0].description,
-                                day = shortForecast.forecastDays[0].day
+                                day = shortForecast.forecastDays[0].date
                             )
                             ExtremePointsWeatherCard(
                                 minTemp = shortForecast.forecastDays[1].minTempInCelsius,
                                 maxTemp = shortForecast.forecastDays[1].maxTempInCelsius,
                                 description = shortForecast.forecastDays[1].description,
-                                day = shortForecast.forecastDays[1].day
+                                day = shortForecast.forecastDays[1].date
                             )
                             ExtremePointsWeatherCard(
                                 minTemp = shortForecast.forecastDays[2].minTempInCelsius,
                                 maxTemp = shortForecast.forecastDays[2].maxTempInCelsius,
                                 description = shortForecast.forecastDays[2].description,
-                                day = shortForecast.forecastDays[2].day
+                                day = shortForecast.forecastDays[2].date
                             )
                         }
                     }

@@ -12,16 +12,16 @@ fun ShortWeatherInfoDto.toShortWeatherInfo(): ShortWeatherInfo =
     )
 
 data class ShortWeatherInfoDto(
-    @SerializedName("location") val location: LocationShort,
-    @SerializedName("current") val current: CurrentShort
+    @SerializedName("location") val location: LocationShortDto,
+    @SerializedName("current") val current: CurrentShortDto
 )
 
-data class LocationShort(
+data class LocationShortDto(
     @SerializedName("name") val city: String,
     @SerializedName("country") val country: String,
 )
 
-data class CurrentShort(
+data class CurrentShortDto(
     @SerializedName("temp_c") val tempInCelsius: Double,
     @SerializedName("temp_f") val tempInFahrenheit: Double
 )

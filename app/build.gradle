@@ -33,7 +33,6 @@ android {
         }
     }
     buildFeatures {
-        viewBinding = true
         compose true
     }
     buildTypes {
@@ -51,6 +50,8 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
+        kotlinOptions.freeCompilerArgs += ['-opt-in=kotlin.RequiresOptIn']
+        //
     }
     packagingOptions {
         resources {

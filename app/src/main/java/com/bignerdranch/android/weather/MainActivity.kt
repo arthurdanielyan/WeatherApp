@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             enterTransition = { slideInLeft },
                             exitTransition = { slideOutRight }
                         ) {
-                            FiveDaysForecastScreen()
+                            FiveDaysForecastScreen(hiltViewModel())
                         }
                     }
                 }

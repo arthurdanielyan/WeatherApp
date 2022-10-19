@@ -3,7 +3,7 @@ package com.bignerdranch.android.weather.feature_city_weather.domain.repository
 import android.graphics.Bitmap
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
-import com.bignerdranch.android.weather.feature_city_weather.domain.model.ShortForecast
+import com.bignerdranch.android.weather.core.model.ShortForecastList
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
 import kotlinx.coroutines.flow.Flow
 
@@ -13,7 +13,7 @@ interface CityWeatherRepository {
 
     suspend fun getIcon(): Bitmap
 
-    suspend fun get3DaysForecast(city: String): Flow<Result<ShortForecast>>
+    suspend fun get3DaysForecast(city: String): Flow<Result<ShortForecastList>>
 
     suspend fun saveCity(city: ShortWeatherInfo)
 }
