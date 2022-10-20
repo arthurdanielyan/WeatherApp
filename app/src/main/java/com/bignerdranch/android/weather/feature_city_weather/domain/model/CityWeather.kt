@@ -15,6 +15,7 @@ data class CityWeather(
     val tempInFahrenheit: Double,
     val isDay: Boolean,
     val description: String,
+    val iconUrl: String,
     var icon: Bitmap?,
     val pressure: Int
 )

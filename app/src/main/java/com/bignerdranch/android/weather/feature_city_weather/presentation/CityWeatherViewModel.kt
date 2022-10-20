@@ -8,7 +8,7 @@ import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.toShortWeatherInfo
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.Get3DaysForecastUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetCityWeatherUseCase
-import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetIconUseCase
+import com.bignerdranch.android.weather.core.domain.usecases.GetIconUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.SaveCityUseCase
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.CityWeatherState
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
@@ -60,7 +60,7 @@ class CityWeatherViewModel @Inject constructor(
                             value = result.data!!,
                             error = ""
                         )
-                        getIcon()
+                        getIcon(result.data.iconUrl)
                         get3DayShortWeather(city)
                     }
                     is Result.Loading -> {
@@ -112,9 +112,9 @@ class CityWeatherViewModel @Inject constructor(
         }
     }
 
-    private fun getIcon() {
+    private fun getIcon(iconUrl: String) {
         viewModelScope.launch {
-            _weatherIcon.value = WeatherIconState(getIconUseCase())
+            _weatherIcon.value = WeatherIconState(getIconUseCase(iconUrl))
         }
     }
     

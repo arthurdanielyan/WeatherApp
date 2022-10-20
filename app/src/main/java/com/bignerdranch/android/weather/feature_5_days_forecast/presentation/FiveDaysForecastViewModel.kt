@@ -37,6 +37,7 @@ class FiveDaysForecastViewModel @Inject constructor(
                             list = result.data!!,
                             error = ""
                         )
+
                     }
                     is Result.Loading -> {
                         _fiveDaysForecastState.value = FiveDaysForecastState(
@@ -56,4 +57,5 @@ class FiveDaysForecastViewModel @Inject constructor(
             }
         }
     }
+
 }

@@ -55,6 +55,7 @@ fun FiveDaysForecastScreen(
         val circleStroke by remember { mutableStateOf(2) }
         val verticalPadding by remember { mutableStateOf(50) }
         val textMeasurer = rememberTextMeasurer()
+        
         Column(
             modifier = Modifier
                 .fillMaxSize()
