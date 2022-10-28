@@ -3,6 +3,7 @@ package com.bignerdranch.android.weather.core.data.dto.mapper
 import com.bignerdranch.android.weather.core.data.dto.CityWeatherDto
 import com.bignerdranch.android.weather.core.data.dto.ForecastDayDto
 import com.bignerdranch.android.weather.core.data.dto.ShortForecastDto
+import com.bignerdranch.android.weather.core.model.Date
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.core.model.ForecastDay
 import com.bignerdranch.android.weather.core.model.ShortForecastList
@@ -20,14 +21,21 @@ fun CityWeatherDto.toCityWeather(): CityWeather =
         pressure = current.pressure
     )
 
+//2022-10-28"
 fun ForecastDayDto.toForecastDay(): ForecastDay =
     ForecastDay(
-        date = this.date.substring(this.date.length - 2),
+        date = Date(
+            day = this.date.substring(this.date.length-2).toInt(),
+            month = this.date.substring(this.date.length-5, 7).toInt(),
+            year = this.date.substring(0, 4).toInt(),
+        ),
+        dayName = "",
         maxTempInCelsius = this.day.maxTempInCelsius,
         minTempInCelsius = day.minTempInCelsius,
         maxTempInFahrenheit = day.maxTempInFahrenheit,
         minTempInFahrenheit = day.minTempInFahrenheit,
-        description = day.condition.description
+        description = day.condition.description,
+        iconUrl = day.condition.iconUrl
     )
 
 fun ShortForecastDto.toShortForecast(): ShortForecastList =

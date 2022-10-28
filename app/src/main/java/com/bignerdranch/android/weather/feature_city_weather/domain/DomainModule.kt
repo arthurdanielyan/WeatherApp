@@ -19,7 +19,7 @@ object DomainModule {
     @ViewModelScoped
     fun provideGetCityWeatherUseCase(cityWeatherRepository: CityWeatherRepository) =
         GetCityWeatherUseCase(cityWeatherRepository, Dispatchers.Default)
-    
+
     @Provides
     @ViewModelScoped
     fun provideSaveCityUseCase(cityWeatherRepository: CityWeatherRepository) =
