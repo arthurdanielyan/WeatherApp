@@ -273,33 +273,33 @@ fun CityWeatherScreen(
                             )
                         }
                     }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(
+                                        Color(MaterialTheme.colors.defaultGradientEnd.toArgb()),
+                                        Color(MaterialTheme.colors.defaultGradientStart.toArgb())
+                                    ),
+                                    start = Offset.Zero,
+                                    end = Offset.Infinite
+                                ),
+                                shape = RoundedCornerShape(9999.dp)
+                            )
+                            .clip(RoundedCornerShape(9999.dp))
+                            .clickable {
+                                if(weatherState.value != null)
+                                    navController.navigate(Screen.FiveDaysForecast.route + "/${weatherState.value.city}")
+                            }
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("5 days forecast")
+                    }
                 }
             }
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(MaterialTheme.colors.defaultGradientEnd.toArgb()),
-                            Color(MaterialTheme.colors.defaultGradientStart.toArgb())
-                        ),
-                        start = Offset.Zero,
-                        end = Offset.Infinite
-                    ),
-                    shape = RoundedCornerShape(9999.dp)
-                )
-                .clip(RoundedCornerShape(9999.dp))
-                .clickable {
-                    if(weatherState.value != null)
-                    navController.navigate(Screen.FiveDaysForecast.route + "/${weatherState.value.city}")
-                }
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("5 days forecast")
         }
     }
 }

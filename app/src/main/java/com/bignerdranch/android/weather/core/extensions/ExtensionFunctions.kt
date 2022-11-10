@@ -15,6 +15,21 @@ fun Offset.normalized(): Offset {
     return Offset(this.x / length, this.y / length)
 }
 
+fun dayName(day: Int): String {
+    val today = GregorianCalendar().get(Calendar.DAY_OF_MONTH)
+    return when (day) {
+        today -> {
+            "Today"
+        }
+        GregorianCalendar().apply { add(Calendar.DAY_OF_MONTH, 1) }.get(Calendar.DAY_OF_MONTH) -> {
+            "Tomorrow"
+        }
+        else -> {
+            convertToWeekDay(day)
+        }
+    }
+}
+
 fun convertToWeekDay(day: Int, shortened: Boolean = false): String {
     val today = GregorianCalendar().get(Calendar.DAY_OF_MONTH)
     val calendar = GregorianCalendar()

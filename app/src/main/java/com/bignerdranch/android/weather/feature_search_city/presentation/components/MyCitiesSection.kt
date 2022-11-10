@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.presentation.cityCardAppearance
 import com.bignerdranch.android.weather.core.presentation.slideOutRight
 import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
@@ -37,7 +36,6 @@ fun MyCitiesSection(
     }
     var itemCount by remember { mutableStateOf(0) }
     var animPlayed by rememberSaveable { mutableStateOf(false) }
-    log("anim played $animPlayed")
 
     LaunchedEffect(Unit) {
         itemCount = myCities.size
@@ -47,15 +45,11 @@ fun MyCitiesSection(
         targetValue = itemCount,
         animationSpec = tween(1000),
         finishedListener = {
-            log("animation finished")
             animPlayed = true
         }
     )
 
-    log("$itemCountAnim")
-
     if (myCities.isNotEmpty()) {
-        log("building lazy column")
         LazyColumn(
             modifier = modifier
         ) {

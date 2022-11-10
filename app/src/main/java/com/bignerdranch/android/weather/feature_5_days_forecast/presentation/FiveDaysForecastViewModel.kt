@@ -12,7 +12,8 @@ import com.bignerdranch.android.weather.core.model.ShortForecastList
 import com.bignerdranch.android.weather.feature_5_days_forecast.domain.usecases.GetFiveDayForecastUseCase
 import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.state_wrappers.FiveDaysForecastState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -74,9 +75,13 @@ class FiveDaysForecastViewModel @Inject constructor(
                     fiveDaysForecastState.value.list!!.forecastDays.toMutableList().apply {
                         this[index].icon = getIconUseCase(day.iconUrl)
                     }
+                log("icon $index loaded")
             }
             _fiveDaysForecastState.value = _fiveDaysForecastState.value.copy(
                 list = ShortForecastList(updatedList)
+            )
+            log(
+                fiveDaysForecastState.value.list!!.forecastDays.last().icon
             )
             areIconsLoaded = true
         }

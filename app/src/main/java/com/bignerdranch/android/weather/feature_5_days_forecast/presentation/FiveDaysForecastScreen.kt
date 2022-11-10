@@ -10,9 +10,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.normalized
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.componentes.DayInfo
 import kotlin.math.roundToInt
 
@@ -31,6 +34,9 @@ fun FiveDaysForecastScreen(
     viewModel: FiveDaysForecastViewModel
 ) {
     val forecastState = viewModel.fiveDaysForecastState.collectAsState()
+    LaunchedEffect(forecastState.value.list?.forecastDays) {
+        log("forecastState updated")
+    }
     if(forecastState.value.list != null) {
         val extremePoints = forecastState.value.list!!.forecastDays
         val maxTemp by remember {
@@ -59,32 +65,54 @@ fun FiveDaysForecastScreen(
         val circleRadius by remember { mutableStateOf(5) }
         val circleStroke by remember { mutableStateOf(2) }
         val verticalPadding by remember { mutableStateOf(50) }
+        val graphPadding by remember { mutableStateOf(30) }
         val textMeasurer = rememberTextMeasurer()
+        var startPadding by remember { mutableStateOf(0f) }
+        var endPadding by remember { mutableStateOf(0f) }
+        val density = LocalDensity.current
 
         Column {
             Text(
                 text = "5-day forecast",
                 style = MaterialTheme.typography.h4,
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier
+                    .padding(36.dp)
             )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(36.dp)
+                    .padding(20.dp)
                     .background(MaterialTheme.colors.background)
             ) {
                 val days = forecastState.value.list!!.forecastDays
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 36.dp)
+                        .padding(
+                            top = 36.dp,
+                            start = startPadding.dp,
+                            end = endPadding.dp
+                        )
                         .horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    for (day in days) {
+                    for (i in days.indices) {
                         DayInfo(
-                            date = day.date,
-                            icon = day.icon
+                            modifier = Modifier
+                                .onGloballyPositioned {
+                                    val width = it.boundsInParent().size.width
+                                    val widthDp = density.run {
+                                        width.toDp().value
+                                    }
+                                    if(i == 0) {
+                                        startPadding = graphPadding - widthDp/2
+                                    } else if (i == days.lastIndex) {
+                                        endPadding = graphPadding - widthDp/2
+                                    }
+                                },
+                            date = days[i].date,
+                            icon = days[i].icon
                         )
                     }
                 }
@@ -93,16 +121,12 @@ fun FiveDaysForecastScreen(
                         .fillMaxWidth()
                         .height(height.dp + verticalPadding.dp * 2)
                 ) {
-
-                    drawRect(
-                        topLeft = Offset(0f, 0f),
-                        size = Size(size.width, size.height),
-                        color = Color.Red
-                    )
                     val maxPoints: MutableList<Offset> = mutableListOf()
                     val minPoints: MutableList<Offset> = mutableListOf()
                     extremePoints.forEachIndexed { index, extremePoints ->
-                        val x = index * (this.size.width / 4)
+                        val pointWidth = this.size.width / 4 - 10.dp.toPx()
+                        val graphPaddingPx = graphPadding.dp.toPx()
+                        val x = index * ((this.size.width - 2*graphPaddingPx) / 4) + graphPaddingPx
 
                         // drawing max temp circles
                         val fromMin = extremePoints.maxTempInCelsius - minTemp
@@ -120,7 +144,7 @@ fun FiveDaysForecastScreen(
                             textMeasurer = textMeasurer,
                             text = "${extremePoints.maxTempInCelsius.toIntIfPossible()}°",
                             topLeft = Offset(
-                                (x - 20.dp.toPx()),
+                                (x - 15.dp.toPx()),
                                 y - 36.dp.toPx()
                             ),
                             style = TextStyle(

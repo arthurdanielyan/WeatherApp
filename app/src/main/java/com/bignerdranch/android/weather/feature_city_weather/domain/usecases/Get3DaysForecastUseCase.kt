@@ -1,6 +1,6 @@
 package com.bignerdranch.android.weather.feature_city_weather.domain.usecases
 
-import com.bignerdranch.android.weather.core.extensions.convertToWeekDay
+import com.bignerdranch.android.weather.core.extensions.dayName
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.core.model.ShortForecastList
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
@@ -8,8 +8,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import java.util.*
-import java.util.Calendar.*
 
 class Get3DaysForecastUseCase(
     private val cityWeatherRepository: CityWeatherRepository,
@@ -24,19 +22,7 @@ class Get3DaysForecastUseCase(
                 if (result !is Result.Success) return@collect
                 val shortForecast = result.data!!
                 shortForecast.forecastDays.forEach { forecastDay ->
-                    val day = forecastDay.date.day
-                    val today = GregorianCalendar().get(DAY_OF_MONTH)
-                    when (day) {
-                        today -> {
-                            forecastDay.dayName = "Today"
-                        }
-                        GregorianCalendar().apply { add(DAY_OF_MONTH, 1) }.get(DAY_OF_MONTH) -> {
-                            forecastDay.dayName = "Tomorrow"
-                        }
-                        else -> {
-                            forecastDay.dayName = convertToWeekDay(day)
-                        }
-                    }
+                    forecastDay.dayName = dayName(forecastDay.date.day)
                 }
                 val sortedList = shortForecast.forecastDays.toMutableList().also { forecastDays ->
                     forecastDays.forEachIndexed { index, forecastDay ->

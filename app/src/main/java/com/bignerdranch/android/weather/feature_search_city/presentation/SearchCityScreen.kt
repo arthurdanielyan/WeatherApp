@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.CityWeatherCard
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.MyCitiesSection
@@ -133,7 +132,6 @@ fun SearchCityScreen(
             noInternet = true
         }
         val myCities = viewModel.myCities.collectAsState()
-        log("search city screen ${myCities.value.myCities?.size}")
         if(myCities.value.myCities != null)
         MyCitiesSection(
             modifier = Modifier.fillMaxWidth(),
