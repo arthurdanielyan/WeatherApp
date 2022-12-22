@@ -1,5 +1,6 @@
 package com.bignerdranch.android.weather.feature_5_days_forecast.presentation
 
+import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -69,16 +70,24 @@ class FiveDaysForecastViewModel @Inject constructor(
     private fun loadIcons() {
         if (areIconsLoaded) return
         viewModelScope.launch {
-            var updatedList = mutableListOf<ForecastDay>()
+            val updatedList = mutableListOf<Bitmap>()
             fiveDaysForecastState.value.list!!.forecastDays.forEachIndexed { index, day ->
-                updatedList =
-                    fiveDaysForecastState.value.list!!.forecastDays.toMutableList().apply {
-                        this[index].icon = getIconUseCase(day.iconUrl)
-                    }
+                updatedList.add(getIconUseCase(day.iconUrl))
                 log("icon $index loaded")
             }
-            _fiveDaysForecastState.value = _fiveDaysForecastState.value.copy(
-                list = ShortForecastList(updatedList)
+            log("icons loading over")
+            val daysWithIcons = mutableListOf<ForecastDay>()
+            fiveDaysForecastState.value.list!!.forecastDays.forEachIndexed { index, day ->
+                daysWithIcons.add(
+                    day.copy(
+                        icon = updatedList[index]
+                    )
+                )
+            }
+            _fiveDaysForecastState.value = FiveDaysForecastState(
+                isLoading = false,
+                list = ShortForecastList(daysWithIcons),
+                error = ""
             )
             log(
                 fiveDaysForecastState.value.list!!.forecastDays.last().icon

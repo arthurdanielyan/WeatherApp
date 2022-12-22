@@ -11,5 +11,5 @@ data class ForecastDay(
     val minTempInFahrenheit: Double,
     val description: String,
     val iconUrl: String,
-    var icon: Bitmap? = null
+    val icon: Bitmap? = null
 )

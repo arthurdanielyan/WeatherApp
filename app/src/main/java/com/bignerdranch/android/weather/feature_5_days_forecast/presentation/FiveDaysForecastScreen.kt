@@ -12,9 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -36,6 +33,9 @@ fun FiveDaysForecastScreen(
     val forecastState = viewModel.fiveDaysForecastState.collectAsState()
     LaunchedEffect(forecastState.value.list?.forecastDays) {
         log("forecastState updated")
+    }
+    LaunchedEffect(forecastState.value.list?.forecastDays) {
+        log("list changed")
     }
     if(forecastState.value.list != null) {
         val extremePoints = forecastState.value.list!!.forecastDays
@@ -67,9 +67,6 @@ fun FiveDaysForecastScreen(
         val verticalPadding by remember { mutableStateOf(50) }
         val graphPadding by remember { mutableStateOf(30) }
         val textMeasurer = rememberTextMeasurer()
-        var startPadding by remember { mutableStateOf(0f) }
-        var endPadding by remember { mutableStateOf(0f) }
-        val density = LocalDensity.current
 
         Column {
             Text(
@@ -90,27 +87,13 @@ fun FiveDaysForecastScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            top = 36.dp,
-                            start = startPadding.dp,
-                            end = endPadding.dp
+                            top = 36.dp
                         )
                         .horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     for (i in days.indices) {
                         DayInfo(
-                            modifier = Modifier
-                                .onGloballyPositioned {
-                                    val width = it.boundsInParent().size.width
-                                    val widthDp = density.run {
-                                        width.toDp().value
-                                    }
-                                    if(i == 0) {
-                                        startPadding = graphPadding - widthDp/2
-                                    } else if (i == days.lastIndex) {
-                                        endPadding = graphPadding - widthDp/2
-                                    }
-                                },
                             date = days[i].date,
                             icon = days[i].icon
                         )
@@ -124,7 +107,6 @@ fun FiveDaysForecastScreen(
                     val maxPoints: MutableList<Offset> = mutableListOf()
                     val minPoints: MutableList<Offset> = mutableListOf()
                     extremePoints.forEachIndexed { index, extremePoints ->
-                        val pointWidth = this.size.width / 4 - 10.dp.toPx()
                         val graphPaddingPx = graphPadding.dp.toPx()
                         val x = index * ((this.size.width - 2*graphPaddingPx) / 4) + graphPaddingPx
 
