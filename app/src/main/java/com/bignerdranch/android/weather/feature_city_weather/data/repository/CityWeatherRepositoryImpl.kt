@@ -42,7 +42,7 @@ class CityWeatherRepositoryImpl @Inject constructor (
     override suspend fun get3DaysForecast(city: String): Flow<Result<ShortForecastList>> = flow {
         try {
             emit(Result.Loading())
-            val shortForecast = weatherApi.getForecast(city)
+            val shortForecast = weatherApi.getForecast(city,3)
             emit(Result.Success(shortForecast.toShortForecast()))
         } catch (e: HttpException) {
             emit(Result.Error(API_ERROR_MESSAGE))
