@@ -4,16 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.weather.core.ARG_CITY
+import com.bignerdranch.android.weather.core.domain.usecases.GetIconUseCase
 import com.bignerdranch.android.weather.core.model.Result
+import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.toShortWeatherInfo
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.Get3DaysForecastUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetCityWeatherUseCase
-import com.bignerdranch.android.weather.core.domain.usecases.GetIconUseCase
+import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetHourlyForecastUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.SaveCityUseCase
-import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.CityWeatherState
-import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
-import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ShortForecastState
-import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.WeatherIconState
+import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +27,7 @@ class CityWeatherViewModel @Inject constructor(
     private val get3DaysForecastUseCase: Get3DaysForecastUseCase,
     private val getIconUseCase: GetIconUseCase,
     private val saveCityUseCase: SaveCityUseCase,
+    private val getHourlyForecastUseCase: GetHourlyForecastUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -43,6 +43,9 @@ class CityWeatherViewModel @Inject constructor(
     private val _screenEventsChannel: Channel<ScreenEvent> = Channel()
     val screenEvents = _screenEventsChannel.receiveAsFlow()
 
+    private val _hourlyForecastState = MutableStateFlow(HourlyForecastState())
+    val hourlyForecastState = _hourlyForecastState.asStateFlow()
+
     init {
         savedStateHandle.get<String>(ARG_CITY)?.let {
             getCityWeather(it)
@@ -51,6 +54,7 @@ class CityWeatherViewModel @Inject constructor(
 
     fun getCityWeather(city: String) {
         _shortForecastState.value = ShortForecastState() // makes progress bar appear for short forecast cards
+        _hourlyForecastState.value = HourlyForecastState()
         viewModelScope.launch {
             getCityWeatherUseCase(city).collect { result ->
                 when(result) {
@@ -62,6 +66,7 @@ class CityWeatherViewModel @Inject constructor(
                         )
                         getIcon(result.data.iconUrl)
                         get3DayShortWeather(city)
+                        getHourlyForecast(city)
                     }
                     is Result.Loading -> {
                         _currentWeatherState.value = CityWeatherState(
@@ -126,6 +131,52 @@ class CityWeatherViewModel @Inject constructor(
             } else {
                 _screenEventsChannel.send(ScreenEvent.ShowToast("Couldn't save city"))
             }
+        }
+    }
+
+    private fun getHourlyForecast(city: String) {
+        viewModelScope.launch {
+            getHourlyForecastUseCase(city).collect { result ->
+                when(result) {
+                    is Result.Loading -> {
+                        _hourlyForecastState.value = HourlyForecastState(
+                            isLoading = true,
+                            list = null,
+                            error = ""
+                        )
+                    }
+                    is Result.Success -> {
+                        _hourlyForecastState.value = HourlyForecastState(
+                            isLoading = true,
+                            list = result.data!!,
+                            error = ""
+                        )
+                        loadHourlyForecastIcons()
+                    }
+                    is Result.Error -> {
+                        _hourlyForecastState.value = HourlyForecastState(
+                            isLoading = false,
+                            list = null,
+                            error = result.message!!
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadHourlyForecastIcons() {
+        viewModelScope.launch {
+            val withoutIconsList: List<HourForecast> = hourlyForecastState.value.list!!
+            val withIconsList = mutableListOf<HourForecast>()
+            withoutIconsList.forEachIndexed { index, hourForecast ->
+                withIconsList.add(withoutIconsList[index].copy(icon = getIconUseCase(hourForecast.iconUrl)))
+            }
+            _hourlyForecastState.value = HourlyForecastState(
+                isLoading = false,
+                list = withIconsList,
+                error = ""
+            )
         }
     }
 }

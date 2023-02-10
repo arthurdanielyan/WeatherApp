@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.weather.core.ARG_CITY
 import com.bignerdranch.android.weather.core.domain.usecases.GetIconUseCase
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.ForecastDay
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.core.model.ShortForecastList
@@ -71,11 +70,9 @@ class FiveDaysForecastViewModel @Inject constructor(
         if (areIconsLoaded) return
         viewModelScope.launch {
             val updatedList = mutableListOf<Bitmap>()
-            fiveDaysForecastState.value.list!!.forecastDays.forEachIndexed { index, day ->
+            fiveDaysForecastState.value.list!!.forecastDays.forEach { day ->
                 updatedList.add(getIconUseCase(day.iconUrl))
-                log("icon $index loaded")
             }
-            log("icons loading over")
             val daysWithIcons = mutableListOf<ForecastDay>()
             fiveDaysForecastState.value.list!!.forecastDays.forEachIndexed { index, day ->
                 daysWithIcons.add(
@@ -88,9 +85,6 @@ class FiveDaysForecastViewModel @Inject constructor(
                 isLoading = false,
                 list = ShortForecastList(daysWithIcons),
                 error = ""
-            )
-            log(
-                fiveDaysForecastState.value.list!!.forecastDays.last().icon
             )
             areIconsLoaded = true
         }

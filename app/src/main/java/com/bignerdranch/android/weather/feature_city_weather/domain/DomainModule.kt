@@ -3,6 +3,7 @@ package com.bignerdranch.android.weather.feature_city_weather.domain
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.Get3DaysForecastUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetCityWeatherUseCase
+import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.GetHourlyForecastUseCase
 import com.bignerdranch.android.weather.feature_city_weather.domain.usecases.SaveCityUseCase
 import dagger.Module
 import dagger.Provides
@@ -29,4 +30,11 @@ object DomainModule {
     @ViewModelScoped
     fun provideGet3DaysForecastUseCase(cityWeatherRepository: CityWeatherRepository) =
         Get3DaysForecastUseCase(cityWeatherRepository, Dispatchers.Default)
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetHourlyForecastUseCase(cityWeatherRepository: CityWeatherRepository) =
+        GetHourlyForecastUseCase(cityWeatherRepository, Dispatchers.Default)
+
+
 }

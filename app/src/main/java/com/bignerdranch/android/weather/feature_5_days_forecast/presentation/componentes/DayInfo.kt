@@ -20,7 +20,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.bignerdranch.android.weather.core.extensions.dayName
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Date
 
 @Composable
@@ -29,7 +28,6 @@ fun DayInfo(
     date: Date,
     icon: Bitmap?
 ) {
-    log("DayInfo composition")
     var largerText by remember { mutableStateOf(0f) }
     Column(
         modifier = modifier

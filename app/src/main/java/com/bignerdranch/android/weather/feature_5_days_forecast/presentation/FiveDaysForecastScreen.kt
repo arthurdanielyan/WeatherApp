@@ -5,9 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -21,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.normalized
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.componentes.DayInfo
 import kotlin.math.roundToInt
 
@@ -31,51 +32,46 @@ fun FiveDaysForecastScreen(
     viewModel: FiveDaysForecastViewModel
 ) {
     val forecastState = viewModel.fiveDaysForecastState.collectAsState()
-    LaunchedEffect(forecastState.value.list?.forecastDays) {
-        log("forecastState updated")
-    }
-    LaunchedEffect(forecastState.value.list?.forecastDays) {
-        log("list changed")
-    }
-    if(forecastState.value.list != null) {
-        val extremePoints = forecastState.value.list!!.forecastDays
-        val maxTemp by remember {
-            var max = Int.MIN_VALUE
-            extremePoints.forEach {
-                if (it.maxTempInCelsius > max){
-                    max = it.maxTempInCelsius.roundToInt()
+    Column {
+        Text(
+            text = "5-day forecast",
+            style = MaterialTheme.typography.h4,
+            color = Color.White,
+            modifier = Modifier
+                .padding(36.dp)
+        )
+        if (forecastState.value.list != null) {
+            val extremePoints = forecastState.value.list!!.forecastDays
+            val maxTemp by remember {
+                var max = Int.MIN_VALUE
+                extremePoints.forEach {
+                    if (it.maxTempInCelsius > max) {
+                        max = it.maxTempInCelsius.roundToInt()
+                    }
                 }
+                mutableStateOf(max)
             }
-            mutableStateOf(max)
-        }
-        val minTemp by remember {
-            var min = Int.MAX_VALUE
-            extremePoints.forEach {
-                if (it.minTempInCelsius < min){
-                    min = it.minTempInCelsius.roundToInt()
+            val minTemp by remember {
+                var min = Int.MAX_VALUE
+                extremePoints.forEach {
+                    if (it.minTempInCelsius < min) {
+                        min = it.minTempInCelsius.roundToInt()
+                    }
                 }
+                mutableStateOf(min)
             }
-            mutableStateOf(min)
-        }
 
 
-        val height by remember { mutableStateOf(200) }
-        val unitCount by remember { mutableStateOf(maxTemp - minTemp) }
-        val unitHeight by remember { mutableStateOf(height / unitCount) }
-        val circleRadius by remember { mutableStateOf(5) }
-        val circleStroke by remember { mutableStateOf(2) }
-        val verticalPadding by remember { mutableStateOf(50) }
-        val graphPadding by remember { mutableStateOf(30) }
-        val textMeasurer = rememberTextMeasurer()
+            val height by remember { mutableStateOf(200) }
+            val unitCount by remember { mutableStateOf(maxTemp - minTemp) }
+            val unitHeight by remember { mutableStateOf(height / unitCount) }
+            val circleRadius by remember { mutableStateOf(5) }
+            val circleStroke by remember { mutableStateOf(2) }
+            val verticalPadding by remember { mutableStateOf(50) }
+            val graphPadding by remember { mutableStateOf(30) }
+            val textMeasurer = rememberTextMeasurer()
 
-        Column {
-            Text(
-                text = "5-day forecast",
-                style = MaterialTheme.typography.h4,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(36.dp)
-            )
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -108,7 +104,8 @@ fun FiveDaysForecastScreen(
                     val minPoints: MutableList<Offset> = mutableListOf()
                     extremePoints.forEachIndexed { index, extremePoints ->
                         val graphPaddingPx = graphPadding.dp.toPx()
-                        val x = index * ((this.size.width - 2*graphPaddingPx) / 4) + graphPaddingPx
+                        val x =
+                            index * ((this.size.width - 2 * graphPaddingPx) / 4) + graphPaddingPx
 
                         // drawing max temp circles
                         val fromMin = extremePoints.maxTempInCelsius - minTemp
@@ -180,6 +177,14 @@ fun FiveDaysForecastScreen(
                         )
                     }
                 }
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
     }

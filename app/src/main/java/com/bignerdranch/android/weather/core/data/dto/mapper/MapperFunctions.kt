@@ -2,11 +2,13 @@ package com.bignerdranch.android.weather.core.data.dto.mapper
 
 import com.bignerdranch.android.weather.core.data.dto.CityWeatherDto
 import com.bignerdranch.android.weather.core.data.dto.ForecastDayDto
-import com.bignerdranch.android.weather.core.data.dto.ShortForecastDto
+import com.bignerdranch.android.weather.core.data.dto.HourDto
+import com.bignerdranch.android.weather.core.data.dto.ForecastDto
 import com.bignerdranch.android.weather.core.model.Date
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.core.model.ForecastDay
 import com.bignerdranch.android.weather.core.model.ShortForecastList
+import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 
 fun CityWeatherDto.toCityWeather(): CityWeather =
     CityWeather(
@@ -38,7 +40,21 @@ fun ForecastDayDto.toForecastDay(): ForecastDay =
         iconUrl = day.condition.iconUrl
     )
 
-fun ShortForecastDto.toShortForecast(): ShortForecastList =
+fun ForecastDto.toShortForecast(): ShortForecastList =
     ShortForecastList(
         this.forecastDays.forecastDays.map { it.toForecastDay() }
+    )
+
+fun HourDto.toHourForecast(): HourForecast =
+    HourForecast(
+        time = this.time.substringAfter(' '),
+        date = Date( // from api date comes in a format of YYYY-MM-DD HH:MM
+            day = this.time.substringAfterLast('-').substringBefore(' ').toInt(),
+            month = this.time.substringAfter('-').substringBefore('-').toInt(),
+            year = this.time.substringBefore('-').toInt(),
+        ),
+        tempInCelsius = this.tempCelsius,
+        tempInFahrenheit = this.tempFahrenheit,
+        iconUrl = this.condition.iconUrl,
+        icon = null
     )
