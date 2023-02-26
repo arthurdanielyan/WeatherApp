@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.normalized
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.componentes.DayInfo
+import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.components.DayInfo
+import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.components.DayInfoCard
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalTextApi::class)
@@ -43,35 +44,59 @@ fun FiveDaysForecastScreen(
         if (forecastState.value.list != null) {
             val extremePoints = forecastState.value.list!!.forecastDays
             val maxTemp by remember {
-                var max = Int.MIN_VALUE
+                var max = Double.MIN_VALUE
                 extremePoints.forEach {
                     if (it.maxTempInCelsius > max) {
-                        max = it.maxTempInCelsius.roundToInt()
+                        max = it.maxTempInCelsius
                     }
                 }
                 mutableStateOf(max)
             }
             val minTemp by remember {
-                var min = Int.MAX_VALUE
+                var min = Double.MAX_VALUE
                 extremePoints.forEach {
                     if (it.minTempInCelsius < min) {
-                        min = it.minTempInCelsius.roundToInt()
+                        min = it.minTempInCelsius
                     }
                 }
                 mutableStateOf(min)
             }
 
 
-            val height by remember { mutableStateOf(200) }
+            val canvasHeight by remember { mutableStateOf(200) }
             val unitCount by remember { mutableStateOf(maxTemp - minTemp) }
-            val unitHeight by remember { mutableStateOf(height / unitCount) }
+            val unitHeight by remember { mutableStateOf(canvasHeight / unitCount) }
             val circleRadius by remember { mutableStateOf(5) }
             val circleStroke by remember { mutableStateOf(2) }
             val verticalPadding by remember { mutableStateOf(50) }
             val graphPadding by remember { mutableStateOf(30) }
             val textMeasurer = rememberTextMeasurer()
 
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 36.dp
+                    )
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                val days = forecastState.value.list!!.forecastDays
+                days.forEachIndexed { index, weatherInfo ->
+                    DayInfoCard(
+                        weatherInfo = weatherInfo,
+                        nextDayWeatherInfo = try { days[index+1] } catch (e: IndexOutOfBoundsException){null},
+                        canvasHeight = canvasHeight,
+                        unitHeight = unitHeight,
+                        circleRadius = circleRadius,
+                        circleStroke = circleStroke,
+                        maxTemp = maxTemp,
+                        minTemp = minTemp
+                    )
+                }
+            }
 
+            /*
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,7 +123,7 @@ fun FiveDaysForecastScreen(
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(height.dp + verticalPadding.dp * 2)
+                        .height(canvasHeight.dp + verticalPadding.dp * 2)
                 ) {
                     val maxPoints: MutableList<Offset> = mutableListOf()
                     val minPoints: MutableList<Offset> = mutableListOf()
@@ -110,7 +135,7 @@ fun FiveDaysForecastScreen(
                         // drawing max temp circles
                         val fromMin = extremePoints.maxTempInCelsius - minTemp
                         val yFromMin = (fromMin * unitHeight).dp.toPx()
-                        val y = height.dp.toPx() - yFromMin + verticalPadding.dp.toPx()
+                        val y = canvasHeight.dp.toPx() - yFromMin + verticalPadding.dp.toPx()
                         drawCircle(
                             center = Offset(x, y),
                             radius = circleRadius.dp.toPx(),
@@ -136,7 +161,7 @@ fun FiveDaysForecastScreen(
                         // drawing min temp circles
                         val fromMin2 = extremePoints.minTempInCelsius.roundToInt() - minTemp
                         val yFromMin2 = (fromMin2 * unitHeight).dp.toPx()
-                        val y2 = height.dp.toPx() - yFromMin2 + verticalPadding.dp.toPx()
+                        val y2 = canvasHeight.dp.toPx() - yFromMin2 + verticalPadding.dp.toPx()
                         drawCircle(
                             center = Offset(x, y2),
                             radius = circleRadius.dp.toPx(),
@@ -177,7 +202,7 @@ fun FiveDaysForecastScreen(
                         )
                     }
                 }
-            }
+            }*/
         } else {
             Box(
                 modifier = Modifier

@@ -1,6 +1,6 @@
 package com.bignerdranch.android.weather.core.data.dto
 
-import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
 import com.google.gson.annotations.SerializedName
 
 fun ShortWeatherInfoDto.toShortWeatherInfo(): ShortWeatherInfo =

@@ -6,8 +6,8 @@ import com.bignerdranch.android.weather.core.data.dto.HourDto
 import com.bignerdranch.android.weather.core.data.dto.ForecastDto
 import com.bignerdranch.android.weather.core.model.Date
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
-import com.bignerdranch.android.weather.core.model.ForecastDay
-import com.bignerdranch.android.weather.core.model.ShortForecastList
+import com.bignerdranch.android.weather.core.model.WeatherInfo
+import com.bignerdranch.android.weather.core.model.WeatherInfoList
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 
 fun CityWeatherDto.toCityWeather(): CityWeather =
@@ -24,8 +24,8 @@ fun CityWeatherDto.toCityWeather(): CityWeather =
     )
 
 //2022-10-28"
-fun ForecastDayDto.toForecastDay(): ForecastDay =
-    ForecastDay(
+fun ForecastDayDto.toForecastDay(): WeatherInfo =
+    WeatherInfo(
         date = Date(
             day = this.date.substring(this.date.length-2).toInt(),
             month = this.date.substring(this.date.length-5, 7).toInt(),
@@ -40,8 +40,8 @@ fun ForecastDayDto.toForecastDay(): ForecastDay =
         iconUrl = day.condition.iconUrl
     )
 
-fun ForecastDto.toShortForecast(): ShortForecastList =
-    ShortForecastList(
+fun ForecastDto.toShortForecast(): WeatherInfoList =
+    WeatherInfoList(
         this.forecastDays.forecastDays.map { it.toForecastDay() }
     )
 

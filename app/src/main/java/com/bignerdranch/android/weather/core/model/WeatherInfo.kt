@@ -2,7 +2,7 @@ package com.bignerdranch.android.weather.core.model
 
 import android.graphics.Bitmap
 
-data class ForecastDay(
+data class WeatherInfo(
     var date: Date,
     var dayName: String,
     val maxTempInCelsius: Double,

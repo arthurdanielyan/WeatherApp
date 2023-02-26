@@ -2,7 +2,7 @@ package com.bignerdranch.android.weather.feature_city_weather.domain.usecases
 
 import com.bignerdranch.android.weather.core.extensions.dayName
 import com.bignerdranch.android.weather.core.model.Result
-import com.bignerdranch.android.weather.core.model.ShortForecastList
+import com.bignerdranch.android.weather.core.model.WeatherInfoList
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ class Get3DaysForecastUseCase(
     private val coroutineDispatcher: CoroutineDispatcher
 ) {
 
-    suspend operator fun invoke(city: String): Flow<Result<ShortForecastList>> {
+    suspend operator fun invoke(city: String): Flow<Result<WeatherInfoList>> {
         return withContext(coroutineDispatcher) {
             val resultFlow = cityWeatherRepository.get3DaysForecast(city)
             var newFlow = resultFlow
@@ -36,7 +36,7 @@ class Get3DaysForecastUseCase(
                     }
                 }
                 newFlow =
-                    flow { emit(Result.Success(ShortForecastList(forecastDays = sortedList))) }
+                    flow { emit(Result.Success(WeatherInfoList(forecastDays = sortedList))) }
             }
             return@withContext newFlow
         }

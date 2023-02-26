@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bignerdranch.android.weather.core.presentation.cityCardAppearance
 import com.bignerdranch.android.weather.core.presentation.slideOutRight
-import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
 
 @Composable
 fun MyCitiesSection(

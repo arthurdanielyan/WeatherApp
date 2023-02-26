@@ -3,7 +3,7 @@ package com.bignerdranch.android.weather.feature_search_city.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.weather.core.model.Result
-import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
 import com.bignerdranch.android.weather.feature_search_city.domain.usecases.GetMyCitiesUseCase
 import com.bignerdranch.android.weather.feature_search_city.domain.usecases.SearchCityUseCase
 import com.bignerdranch.android.weather.feature_search_city.presentation.state_wrappers.MyCitiesState

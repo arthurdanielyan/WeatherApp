@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.weather.core.ARG_CITY
 import com.bignerdranch.android.weather.core.domain.usecases.GetIconUseCase
-import com.bignerdranch.android.weather.core.model.ForecastDay
+import com.bignerdranch.android.weather.core.model.WeatherInfo
 import com.bignerdranch.android.weather.core.model.Result
-import com.bignerdranch.android.weather.core.model.ShortForecastList
+import com.bignerdranch.android.weather.core.model.WeatherInfoList
 import com.bignerdranch.android.weather.feature_5_days_forecast.domain.usecases.GetFiveDayForecastUseCase
 import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.state_wrappers.FiveDaysForecastState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,7 +73,7 @@ class FiveDaysForecastViewModel @Inject constructor(
             fiveDaysForecastState.value.list!!.forecastDays.forEach { day ->
                 updatedList.add(getIconUseCase(day.iconUrl))
             }
-            val daysWithIcons = mutableListOf<ForecastDay>()
+            val daysWithIcons = mutableListOf<WeatherInfo>()
             fiveDaysForecastState.value.list!!.forecastDays.forEachIndexed { index, day ->
                 daysWithIcons.add(
                     day.copy(
@@ -83,7 +83,7 @@ class FiveDaysForecastViewModel @Inject constructor(
             }
             _fiveDaysForecastState.value = FiveDaysForecastState(
                 isLoading = false,
-                list = ShortForecastList(daysWithIcons),
+                list = WeatherInfoList(daysWithIcons),
                 error = ""
             )
             areIconsLoaded = true

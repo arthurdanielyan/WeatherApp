@@ -7,13 +7,12 @@ import com.bignerdranch.android.weather.core.data.dto.mapper.toCityWeather
 import com.bignerdranch.android.weather.core.data.dto.mapper.toHourForecast
 import com.bignerdranch.android.weather.core.data.dto.mapper.toShortForecast
 import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao
-import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.core.model.Result
-import com.bignerdranch.android.weather.core.model.ShortForecastList
+import com.bignerdranch.android.weather.core.model.WeatherInfoList
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
-import com.bignerdranch.android.weather.feature_search_city.domain.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -40,7 +39,7 @@ class CityWeatherRepositoryImpl @Inject constructor (
         }
     }
 
-    override suspend fun get3DaysForecast(city: String): Flow<Result<ShortForecastList>> = flow {
+    override suspend fun get3DaysForecast(city: String): Flow<Result<WeatherInfoList>> = flow {
         try {
             emit(Result.Loading())
             val shortForecast = weatherApi.getForecast(city,3, "")
@@ -62,7 +61,6 @@ class CityWeatherRepositoryImpl @Inject constructor (
             val calendar = GregorianCalendar()
             val todayString = "${calendar.get(YEAR)}-${calendar.get(MONTH)+1}-${calendar.get(DAY_OF_MONTH)}"
             val todayForecast = weatherApi.getForecast(city, 1, todayString)
-            log(todayString)
 
             val tomorrowString = "${calendar.get(YEAR)}-${calendar.get(MONTH)+1}-${calendar.get(DAY_OF_MONTH)+1}"
             val tomorrowForecast = weatherApi.getForecast(city, 1, tomorrowString)
@@ -74,7 +72,6 @@ class CityWeatherRepositoryImpl @Inject constructor (
                 tomorrowForecast.forecastDays.forecastDays[0].hours
                     .subList(0, 24-finalHourlyForecastList.size)
             )
-            log("finalHourlyForecastList size is ${finalHourlyForecastList.size}")
             emit(Result.Success(finalHourlyForecastList.toList().map { it.toHourForecast() }))
         } catch (e: HttpException) {
             emit(Result.Error(API_ERROR_MESSAGE))

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.feature_5_days_forecast.presentation.componentes
+package com.bignerdranch.android.weather.feature_5_days_forecast.presentation.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image

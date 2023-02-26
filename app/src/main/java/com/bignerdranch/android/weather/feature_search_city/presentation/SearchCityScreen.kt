@@ -32,8 +32,9 @@ import com.bignerdranch.android.weather.feature_search_city.presentation.compone
 @Composable
 fun SearchCityScreen(
     navController: NavController,
-    viewModel: SearchCityViewModel/* = getViewModel()*/
+    viewModel: SearchCityViewModel
 ) {
+    var navigationAllowed by remember { mutableStateOf(true) }
     val currentWeather = viewModel.searchedCityWeather.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -98,8 +99,13 @@ fun SearchCityScreen(
                 modifier = Modifier.padding(vertical = 25.dp),
                 weatherInfo = currentWeather.value.shortWeatherInfo!!,
                 onClick = {
-                    keyboardController?.hide()
-                    navController.navigate(Screen.CityWeatherScreen.route + "/${currentWeather.value.shortWeatherInfo!!.city}")
+                    if(navigationAllowed) {
+                        keyboardController?.hide()
+                        navController.navigate(Screen.CityWeatherScreen.route + "/${currentWeather.value.shortWeatherInfo!!.city}") {
+                            popUpTo(Screen.SearchCityScreen.route)
+                        }
+                        navigationAllowed = false
+                    }
                 }
             )
         } else if (currentWeather.value.isLoading) {
@@ -137,8 +143,13 @@ fun SearchCityScreen(
             modifier = Modifier.fillMaxWidth(),
             myCities = myCities.value.myCities!!,
             onClick = {
-                keyboardController?.hide()
-                navController.navigate(Screen.CityWeatherScreen.route + "/${it}")
+                if(navigationAllowed) {
+                    keyboardController?.hide()
+                    navController.navigate(Screen.CityWeatherScreen.route + "/${it}") {
+                        popUpTo(Screen.SearchCityScreen.route)
+                    }
+                    navigationAllowed = false
+                }
             }
         )
     }

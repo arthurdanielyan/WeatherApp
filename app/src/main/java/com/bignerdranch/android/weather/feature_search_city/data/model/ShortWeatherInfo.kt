@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.feature_search_city.domain.model
+package com.bignerdranch.android.weather.feature_search_city.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
