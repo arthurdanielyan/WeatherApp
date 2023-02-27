@@ -11,7 +11,6 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bignerdranch.android.weather.core.ARG_CITY
 import com.bignerdranch.android.weather.core.presentation.*
 import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.FiveDaysForecastScreen
 import com.bignerdranch.android.weather.feature_city_weather.presentation.CityWeatherScreen
@@ -50,7 +49,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.SearchCityScreen.route
                     ) {
                         composable(
-                            route = Screen.SearchCityScreen.route,
+                            route = Screen.SearchCityScreen.argumentedRoute,
                             exitTransition = { slideOutLeft },
                             enterTransition = { slideInRight }
                         ) {
@@ -58,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = Screen.CityWeatherScreen.route + "/{$ARG_CITY}",
+                            route = Screen.CityWeatherScreen.argumentedRoute,
                             enterTransition = { slideInLeft },
                             exitTransition = { slideOutRight },
                         ) {
@@ -66,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = Screen.FiveDaysForecast.route + "/{$ARG_CITY}",
+                            route = Screen.FiveDaysForecast.argumentedRoute,
                             enterTransition = { slideInLeft },
                             exitTransition = { slideOutRight }
                         ) {

@@ -7,7 +7,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.presentation.Screen
@@ -58,11 +61,12 @@ fun CityWeatherScreen(
     viewModel: CityWeatherViewModel,
     navController: NavController
 ) {
+    var navigationAllowed by remember { mutableStateOf(true) }
     val weatherState = viewModel.currentWeatherState.collectAsState().value
 
     val constraintsTopBar = ConstraintSet {
         val addButton = createRefFor(ADD_BUTTON_ID)
-        val cityText = createRefFor(CITY_TEXT_BOX_ID)
+        val cityTextBox = createRefFor(CITY_TEXT_BOX_ID)
         val refreshButton = createRefFor(REFRESH_BUTTON_ID)
         val countryText = createRefFor(COUNTRY_TEXT_ID)
 
@@ -78,15 +82,16 @@ fun CityWeatherScreen(
             end.linkTo(parent.end)
         }
 
-        constrain(cityText) {
+        constrain(cityTextBox) {
             top.linkTo(parent.top)
             bottom.linkTo(countryText.top)
             start.linkTo(addButton.end)
             end.linkTo(refreshButton.start)
+            width = Dimension.fillToConstraints
         }
 
         constrain(countryText) {
-            top.linkTo(cityText.bottom)
+            top.linkTo(cityTextBox.bottom)
             bottom.linkTo(parent.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
@@ -174,9 +179,11 @@ fun CityWeatherScreen(
                                     viewModel.saveCity()
                                 }
                             )
-                            Box(modifier = Modifier
-                                .layoutId(CITY_TEXT_BOX_ID)
-                                .padding(horizontal = 6.dp)
+                            Box(
+                                modifier = Modifier
+                                    .layoutId(CITY_TEXT_BOX_ID)
+                                    .padding(horizontal = 24.dp),
+                                contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = weatherState.value?.city ?: "Loading…",
@@ -299,10 +306,12 @@ fun CityWeatherScreen(
                             )
                             .clip(RoundedCornerShape(9999.dp))
                             .clickable {
-                                if (weatherState.value != null)
+                                if (weatherState.value != null && navigationAllowed) {
                                     navController.navigate(Screen.FiveDaysForecast.route + "/${weatherState.value.city}") {
-                                        popUpTo(Screen.CityWeatherScreen.route)
+                                        popUpTo(Screen.CityWeatherScreen.argumentedRoute)
                                     }
+                                    navigationAllowed = false
+                                }
                             }
                             .padding(16.dp),
                         contentAlignment = Alignment.Center

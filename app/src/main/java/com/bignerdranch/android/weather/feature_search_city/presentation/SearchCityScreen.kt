@@ -1,5 +1,6 @@
 package com.bignerdranch.android.weather.feature_search_city.presentation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -28,6 +29,7 @@ import com.bignerdranch.android.weather.feature_search_city.presentation.compone
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.MyCitiesSection
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchCityScreen(

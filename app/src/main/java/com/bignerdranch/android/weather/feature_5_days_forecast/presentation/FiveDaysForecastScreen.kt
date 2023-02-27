@@ -1,31 +1,22 @@
 package com.bignerdranch.android.weather.feature_5_days_forecast.presentation
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.bignerdranch.android.weather.core.extensions.normalized
-import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.components.DayInfo
+import com.bignerdranch.android.weather.core.log
 import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.components.DayInfoCard
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -33,7 +24,10 @@ fun FiveDaysForecastScreen(
     viewModel: FiveDaysForecastViewModel
 ) {
     val forecastState = viewModel.fiveDaysForecastState.collectAsState()
-    Column {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(
             text = "5-day forecast",
             style = MaterialTheme.typography.h4,
@@ -68,20 +62,23 @@ fun FiveDaysForecastScreen(
             val unitHeight by remember { mutableStateOf(canvasHeight / unitCount) }
             val circleRadius by remember { mutableStateOf(5) }
             val circleStroke by remember { mutableStateOf(2) }
+            var cardWidth by remember { mutableStateOf(0f) }
             val verticalPadding by remember { mutableStateOf(50) }
             val graphPadding by remember { mutableStateOf(30) }
             val textMeasurer = rememberTextMeasurer()
 
+
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        top = 36.dp
-                    )
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(top = 36.dp)
+                    .onGloballyPositioned {
+                        cardWidth = it.boundsInWindow().width / 5
+                    },
+                horizontalArrangement = Arrangement.Center
             ) {
                 val days = forecastState.value.list!!.forecastDays
+                log(days.size)
                 days.forEachIndexed { index, weatherInfo ->
                     DayInfoCard(
                         weatherInfo = weatherInfo,
@@ -90,7 +87,7 @@ fun FiveDaysForecastScreen(
                         unitHeight = unitHeight,
                         circleRadius = circleRadius,
                         circleStroke = circleStroke,
-                        maxTemp = maxTemp,
+                        cardWidth = cardWidth,
                         minTemp = minTemp
                     )
                 }
