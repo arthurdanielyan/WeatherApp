@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberAnimatedNavController()
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = Screen.SearchCityScreen.route
+                        startDestination = Screen.SearchCityScreen.argumentedRoute
                     ) {
                         composable(
                             route = Screen.SearchCityScreen.argumentedRoute,

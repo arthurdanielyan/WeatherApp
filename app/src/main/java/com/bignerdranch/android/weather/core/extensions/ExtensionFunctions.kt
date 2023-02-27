@@ -15,6 +15,8 @@ fun Offset.normalized(): Offset {
     return Offset(this.x / length, this.y / length)
 }
 
+operator fun Offset.times(number: Number) = Offset(number.toFloat()*x, number.toFloat()*y)
+
 fun dayName(day: Int): String {
     val today = GregorianCalendar().get(Calendar.DAY_OF_MONTH)
     return when (day) {

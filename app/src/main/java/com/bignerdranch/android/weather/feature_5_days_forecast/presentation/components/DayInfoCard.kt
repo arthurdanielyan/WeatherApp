@@ -3,7 +3,6 @@ package com.bignerdranch.android.weather.feature_5_days_forecast.presentation.co
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -11,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -20,6 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.dayName
+import com.bignerdranch.android.weather.core.extensions.normalized
 import com.bignerdranch.android.weather.core.model.WeatherInfo
 import kotlin.math.abs
 
@@ -28,11 +27,12 @@ import kotlin.math.abs
 fun DayInfoCard(
     weatherInfo: WeatherInfo,
     nextDayWeatherInfo: WeatherInfo?,
+    previousDayWeatherInfo: WeatherInfo?,
     canvasHeight: Int, //dp
     unitHeight: Double, //dp
-    circleRadius: Int,
-    circleStroke: Int,
-    cardWidth: Float,
+    circleRadius: Int,  // in dp
+    graphStroke: Int,  //in dp
+    cardWidth: Float, // in pxs
     minTemp: Double
 ) {
     Column(
@@ -51,8 +51,7 @@ fun DayInfoCard(
                     end = 5.dp,
                     top = 12.dp
                 )
-                .height(64.dp),
-            verticalArrangement = Arrangement.Center,
+                .height(90.dp),//must be a fixed height so that the top of the canvas would be a straight line
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -62,29 +61,22 @@ fun DayInfoCard(
             Text(
                 text = "${weatherInfo.date.day}/${weatherInfo.date.month}",
             )
-            if(weatherInfo.icon != null)
+            if(weatherInfo.icon != null) {
+                Spacer(modifier = Modifier.height(6.dp))
                 Image(
                     bitmap = weatherInfo.icon.asImageBitmap(),
                     modifier = Modifier
-                        .width(10.dp),
+                        .size(LocalDensity.current.run { (0.45f*cardWidth).toDp() }),
                     contentDescription = "Daily Weather Icon",
-                    contentScale = ContentScale.Inside
+                    contentScale = ContentScale.Fit
                 )
+            }
         }
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(60.dp))
         Canvas(
             modifier = Modifier
                 .height(canvasHeight.dp)
-                .border(
-                    width = 12.dp,
-                    color = Color.Red
-                )
         ) {
-            drawRect(
-                color = Color.Green,
-                topLeft = Offset(0f, 0f),
-                size = Size(30f, 30f)
-            )
             val centerX = this.size.width / 2 //horizontal center of canvas
             val countFromMin = abs(minTemp - weatherInfo.maxTempInCelsius)
             val circleYMax = this.size.height - countFromMin*unitHeight.dp.toPx()
@@ -93,17 +85,33 @@ fun DayInfoCard(
                 radius = circleRadius.dp.toPx(),
                 color = Color.White,
                 style = Stroke(
-                    width = circleStroke.dp.toPx()
+                    width = graphStroke.dp.toPx()
                 )
             )
+
             if (nextDayWeatherInfo != null) {
                 val nextCountFromMin = abs(minTemp - nextDayWeatherInfo.maxTempInCelsius)
-                val nextCircleYMax = this.size.height - nextCountFromMin.dp.toPx()
-//                val direction = Offset()
-//                drawLine(
-//                    color = Color.White,
-//
-//                )
+                val nextCircleYMax = (this.size.height - nextCountFromMin*unitHeight.dp.toPx()).toFloat()
+                val direction = Offset(cardWidth, nextCircleYMax-circleYMax.toFloat()).normalized()
+                drawLine(
+                    color = Color.White,
+                    start = Offset(0f, circleYMax.toFloat())+direction*(circleRadius.dp.toPx()),
+                    end = Offset(cardWidth, nextCircleYMax),
+                    strokeWidth = graphStroke.dp.toPx()
+                )
+            }
+            if(previousDayWeatherInfo != null) {
+                val previousCountFromMin = abs(minTemp - previousDayWeatherInfo.maxTempInCelsius)
+                val previousCircleYMax = (this.size.height - previousCountFromMin*unitHeight.dp.toPx()).toFloat()
+                val direction = Offset(-cardWidth, previousCircleYMax-circleYMax.toFloat()).normalized()
+                drawLine(
+                    color = Color.White,
+                    start = Offset(0f, circleYMax.toFloat())+direction*(circleRadius.dp.toPx()),
+                    end = Offset(-cardWidth, previousCircleYMax)-direction*circleRadius.dp.toPx(),
+                    strokeWidth = graphStroke.dp.toPx()
+                )
+                /** Why canvas can draw at the left side outside of its box, but not at the right side?
+                 * Because in the row items are put on top of each other?*/
             }
         }
     }

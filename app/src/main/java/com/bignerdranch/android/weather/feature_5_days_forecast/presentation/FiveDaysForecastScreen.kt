@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
@@ -61,7 +60,7 @@ fun FiveDaysForecastScreen(
             val unitCount by remember { mutableStateOf(maxTemp - minTemp) }
             val unitHeight by remember { mutableStateOf(canvasHeight / unitCount) }
             val circleRadius by remember { mutableStateOf(5) }
-            val circleStroke by remember { mutableStateOf(2) }
+            val graphStroke by remember { mutableStateOf(2) }
             var cardWidth by remember { mutableStateOf(0f) }
             val verticalPadding by remember { mutableStateOf(50) }
             val graphPadding by remember { mutableStateOf(30) }
@@ -83,10 +82,11 @@ fun FiveDaysForecastScreen(
                     DayInfoCard(
                         weatherInfo = weatherInfo,
                         nextDayWeatherInfo = try { days[index+1] } catch (e: IndexOutOfBoundsException){null},
+                        previousDayWeatherInfo = try { days[index-1] } catch (e: IndexOutOfBoundsException){null},
                         canvasHeight = canvasHeight,
                         unitHeight = unitHeight,
                         circleRadius = circleRadius,
-                        circleStroke = circleStroke,
+                        graphStroke = graphStroke,
                         cardWidth = cardWidth,
                         minTemp = minTemp
                     )
