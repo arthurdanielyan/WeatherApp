@@ -237,7 +237,7 @@ fun CityWeatherScreen(
                         if (weatherState.value != null) {
                             Spacer(Modifier.height(36.dp))
                             Text(
-                                text = "${weatherState.value.tempInCelsius.toIntIfPossible()}°C",
+                                text = "${weatherState.value.tempInCelsius.toIntIfPossible()}",
                                 style = MaterialTheme.typography.h1
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -265,7 +265,7 @@ fun CityWeatherScreen(
                                         contentDescription = weatherState.value.description,
                                         modifier = Modifier
                                             .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
-                                        contentScale = ContentScale.Crop
+                                        contentScale = ContentScale.Fit
                                     )
                                 else
                                     CircularProgressIndicator(
