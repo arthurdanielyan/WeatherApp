@@ -1,7 +1,7 @@
 package com.bignerdranch.android.weather.core.di
 
-import com.bignerdranch.android.weather.core.data.repository.SharedRepositoryImpl
-import com.bignerdranch.android.weather.core.domain.repository.SharedRepository
+import com.bignerdranch.android.weather.core.data.repository.GetIconRepositoryImpl
+import com.bignerdranch.android.weather.core.domain.repository.GetIconRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,6 +15,6 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindSharedRepository(
-        sharedRepositoryImpl: SharedRepositoryImpl
-    ): SharedRepository
+        sharedRepositoryImpl: GetIconRepositoryImpl
+    ): GetIconRepository
 }

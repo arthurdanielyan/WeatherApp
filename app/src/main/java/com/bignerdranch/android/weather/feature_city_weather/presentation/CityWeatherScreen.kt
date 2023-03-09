@@ -12,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -53,8 +54,9 @@ import kotlin.math.roundToInt
 
 const val ADD_BUTTON_ID = "add_button"
 const val CITY_TEXT_BOX_ID = "city_text"
-const val REFRESH_BUTTON_ID = "refresh_button_id"
-const val COUNTRY_TEXT_ID = "country_button_id"
+const val REFRESH_BUTTON_ID = "refresh_button"
+const val COUNTRY_TEXT_ID = "country_button"
+const val BACK_BUTTON_ID = "back_button"
 
 @Composable
 fun CityWeatherScreen(
@@ -69,9 +71,10 @@ fun CityWeatherScreen(
         val cityTextBox = createRefFor(CITY_TEXT_BOX_ID)
         val refreshButton = createRefFor(REFRESH_BUTTON_ID)
         val countryText = createRefFor(COUNTRY_TEXT_ID)
+        val backButton = createRefFor(BACK_BUTTON_ID)
 
         constrain(addButton) {
-            top.linkTo(parent.top)
+            top.linkTo(backButton.bottom)
             bottom.linkTo(parent.bottom)
             start.linkTo(parent.start)
         }
@@ -95,6 +98,12 @@ fun CityWeatherScreen(
             bottom.linkTo(parent.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
+        }
+
+        constrain(backButton) {
+            top.linkTo(parent.top)
+            bottom.linkTo(addButton.top)
+            start.linkTo(parent.start)
         }
     }
 
@@ -172,18 +181,25 @@ fun CityWeatherScreen(
                         ) {
                             ClickableIcon(
                                 modifier = Modifier
+                                    .layoutId(BACK_BUTTON_ID)
+                                    .padding(bottom = 16.dp),
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Navigate back",
+                                onClick = navController::popBackStack
+                            )
+                            ClickableIcon(
+                                modifier = Modifier
                                     .layoutId(ADD_BUTTON_ID),
                                 imageVector = Icons.Default.Add,
                                 contentDescription = "Add city",
-                                onClick = {
-                                    viewModel.saveCity()
-                                }
+                                onClick = viewModel::saveCity
                             )
-                            Box(
+                            Row(
                                 modifier = Modifier
                                     .layoutId(CITY_TEXT_BOX_ID)
-                                    .padding(horizontal = 24.dp),
-                                contentAlignment = Alignment.Center
+                                    .padding(horizontal = 24.dp)
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
                                     text = weatherState.value?.city ?: "Loading…",

@@ -1,6 +1,6 @@
 package com.bignerdranch.android.weather.feature_search_city.data.repository
 
-import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
+import com.bignerdranch.android.weather.core.data.constants.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.api.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.toShortWeatherInfo
 import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao

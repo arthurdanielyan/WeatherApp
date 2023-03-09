@@ -5,8 +5,9 @@ import com.bignerdranch.android.weather.core.model.WeatherInfoList
 import com.bignerdranch.android.weather.feature_5_days_forecast.domain.repository.FiveDaysForecastRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetFiveDayForecastUseCase(
+class GetFiveDayForecastUseCase @Inject constructor (
     private val repository: FiveDaysForecastRepository,
     private val coroutineDispatcher: CoroutineDispatcher
 ) {

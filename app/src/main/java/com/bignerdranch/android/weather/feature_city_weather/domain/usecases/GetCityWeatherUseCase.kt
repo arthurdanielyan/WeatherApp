@@ -3,8 +3,9 @@ package com.bignerdranch.android.weather.feature_city_weather.domain.usecases
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GetCityWeatherUseCase(
+class GetCityWeatherUseCase @Inject constructor (
     private val cityWeatherRepository: CityWeatherRepository,
     private val coroutineDispatcher: CoroutineDispatcher
 ) {

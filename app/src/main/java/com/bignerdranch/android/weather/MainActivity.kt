@@ -16,6 +16,7 @@ import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.Fiv
 import com.bignerdranch.android.weather.feature_city_weather.presentation.CityWeatherScreen
 import com.bignerdranch.android.weather.feature_search_city.presentation.SearchCityScreen
 import com.bignerdranch.android.weather.feature_search_city.presentation.SearchCityViewModel
+import com.bignerdranch.android.weather.feature_settings.presentation.SettingsScreen
 import com.bignerdranch.android.weather.ui.theme.WeatherTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                searchCityViewModel.myCities.value.isLoading
+                searchCityViewModel.showSplashScreen
             }
         }
 
@@ -69,7 +70,15 @@ class MainActivity : ComponentActivity() {
                             enterTransition = { slideInLeft },
                             exitTransition = { slideOutRight }
                         ) {
-                            FiveDaysForecastScreen(hiltViewModel())
+                            FiveDaysForecastScreen(hiltViewModel(), navController)
+                        }
+
+                        composable(
+                            route = Screen.SettingsScreen.argumentedRoute,
+                            enterTransition = { slideInLeft },
+                            exitTransition = { slideOutRight }
+                        ) {
+                            SettingsScreen(hiltViewModel(), navController)
                         }
                     }
                 }

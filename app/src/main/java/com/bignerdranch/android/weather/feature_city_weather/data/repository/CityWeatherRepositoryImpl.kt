@@ -1,7 +1,7 @@
 package com.bignerdranch.android.weather.feature_city_weather.data.repository
 
-import com.bignerdranch.android.weather.core.API_ERROR_MESSAGE
-import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
+import com.bignerdranch.android.weather.core.data.constants.API_ERROR_MESSAGE
+import com.bignerdranch.android.weather.core.data.constants.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.api.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.mapper.toCityWeather
 import com.bignerdranch.android.weather.core.data.dto.mapper.toHourForecast

@@ -6,8 +6,9 @@ import com.bignerdranch.android.weather.feature_city_weather.domain.repository.C
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GetHourlyForecastUseCase(
+class GetHourlyForecastUseCase @Inject constructor (
     private val cityWeatherRepository: CityWeatherRepository,
     private val coroutineDispatcher: CoroutineDispatcher
 ) {

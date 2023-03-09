@@ -7,9 +7,9 @@ import android.net.Network
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.bignerdranch.android.weather.core.NO_INTERNET_MESSAGE
+import com.bignerdranch.android.weather.core.data.constants.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.CityWeatherCard
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.MyCitiesSection
@@ -71,29 +71,63 @@ fun SearchCityScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        TextField(
-            placeholder = { Text(text = "Search for a city") },
-            value = searchCityTfState,
-            onValueChange = {
-                searchCityTfState = it
-                viewModel.searchCity(searchCityTfState)
-            },
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = Color(0xFF5C5C5C),
-                    shape = RoundedCornerShape(5000.dp)
+        ) {
+            TextField(
+                placeholder = { Text(text = "Search for a city") },
+                value = searchCityTfState,
+                onValueChange = {
+                    searchCityTfState = it
+                    viewModel.searchCity(searchCityTfState)
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .border(
+                        width = 1.dp,
+                        color = Color(0xFF5C5C5C),
+                        shape = RoundedCornerShape(5000.dp)
+                    )
+                    .clip(
+                        shape = RoundedCornerShape(5000.dp)
+                    ),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
                 )
-                .clip(
-                    shape = RoundedCornerShape(5000.dp)
-                ),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
             )
-        )
+            var expanded by remember { mutableStateOf(false) }
+            Box {
+                IconButton(
+                    modifier = Modifier
+                        .padding(start = 6.dp),
+                    onClick = {
+                        expanded = true
+                    }
+                ) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Dropdown menu")
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    }
+                ) {
+                    Divider()
+                    DropdownMenuItem(onClick = {
+                        if(navigationAllowed) {
+                            navController.navigate(Screen.SettingsScreen.route)
+                            expanded = false
+                        }
+                        navigationAllowed = false
+                    }) {
+                        Text("Configure Units")
+                    }
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         if (currentWeather.value.shortWeatherInfo != null) {

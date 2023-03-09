@@ -2,7 +2,7 @@ package com.bignerdranch.android.weather.core.domain.repository
 
 import android.graphics.Bitmap
 
-interface SharedRepository {
+interface GetIconRepository {
 
     suspend fun getIcon(iconUrl: String): Bitmap
 }

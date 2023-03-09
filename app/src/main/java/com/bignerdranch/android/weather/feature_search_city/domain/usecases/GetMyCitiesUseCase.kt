@@ -6,8 +6,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GetMyCitiesUseCase(
+class GetMyCitiesUseCase @Inject constructor (
     private val repository: SearchCityRepository,
     private val coroutineDispatcher: CoroutineDispatcher
 ) {

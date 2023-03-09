@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.core
+package com.bignerdranch.android.weather.core.data.constants
 
 import android.util.Log
 

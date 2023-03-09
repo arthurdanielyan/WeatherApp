@@ -3,14 +3,14 @@ package com.bignerdranch.android.weather.core.data.repository
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import com.bignerdranch.android.weather.core.domain.repository.SharedRepository
+import com.bignerdranch.android.weather.core.domain.repository.GetIconRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.net.URL
 import javax.inject.Inject
 
-class SharedRepositoryImpl @Inject constructor() : SharedRepository {
+class GetIconRepositoryImpl @Inject constructor() : GetIconRepository {
 
     @Suppress("BlockingMethodInNonBlockingContext") // doesn't block the ui thread
     override suspend fun getIcon(iconUrl: String): Bitmap {

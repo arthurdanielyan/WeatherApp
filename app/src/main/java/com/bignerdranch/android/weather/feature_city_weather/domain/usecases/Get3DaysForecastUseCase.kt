@@ -8,8 +8,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class Get3DaysForecastUseCase(
+class Get3DaysForecastUseCase @Inject constructor (
     private val cityWeatherRepository: CityWeatherRepository,
     private val coroutineDispatcher: CoroutineDispatcher
 ) {
