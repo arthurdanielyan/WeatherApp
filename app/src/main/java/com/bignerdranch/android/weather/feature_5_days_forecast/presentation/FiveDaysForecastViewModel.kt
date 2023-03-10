@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.android.weather.core.data.constants.ARG_CITY
+import com.bignerdranch.android.weather.core.constants.ARG_CITY
 import com.bignerdranch.android.weather.core.domain.usecases.GetIconUseCase
 import com.bignerdranch.android.weather.core.model.WeatherInfo
 import com.bignerdranch.android.weather.core.model.Result

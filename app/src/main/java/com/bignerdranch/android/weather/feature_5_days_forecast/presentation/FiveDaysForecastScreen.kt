@@ -4,21 +4,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bignerdranch.android.weather.core.presentation.components.TopBar
 import com.bignerdranch.android.weather.feature_5_days_forecast.presentation.components.DayInfoCard
-import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ClickableIcon
 
 @Composable
 fun FiveDaysForecastScreen(

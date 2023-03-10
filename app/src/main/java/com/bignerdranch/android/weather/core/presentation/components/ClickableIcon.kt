@@ -1,6 +1,7 @@
-package com.bignerdranch.android.weather.feature_city_weather.presentation.components
+package com.bignerdranch.android.weather.core.presentation.components
 
 import android.view.MotionEvent.*
+import androidx.compose.foundation.border
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -9,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.unit.dp
+import com.bignerdranch.android.weather.core.constants.log
 import com.bignerdranch.android.weather.ui.theme.defaultTint
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -32,23 +35,22 @@ fun ClickableIcon(
                 when(event.actionMasked) {
                     ACTION_DOWN -> {
                         isIconHovered = true
+                        log(isIconHovered)
                     }
                     ACTION_CANCEL -> {
                         isIconHovered = false
+                        log(isIconHovered)
                     }
                     ACTION_UP -> {
-                        isIconHovered = false
-                        onClick()
+                        log(isIconHovered)
+                        if(isIconHovered) {
+                            onClick()
+                            isIconHovered = false
+                        }
                     }
                 }
                 true
-            }
-//            .clickable(
-//                indication = null,
-//                interactionSource = MutableInteractionSource(),
-//                onClick = onClick
-//            )
-        ,
+            },
         imageVector = imageVector,
         contentDescription = contentDescription,
         tint = if(isIconHovered) hoverColor else MaterialTheme.colors.defaultTint

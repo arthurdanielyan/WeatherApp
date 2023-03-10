@@ -3,7 +3,7 @@ package com.bignerdranch.android.weather.feature_city_weather.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.android.weather.core.data.constants.ARG_CITY
+import com.bignerdranch.android.weather.core.constants.ARG_CITY
 import com.bignerdranch.android.weather.core.domain.usecases.GetIconUseCase
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast

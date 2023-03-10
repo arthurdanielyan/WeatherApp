@@ -1,7 +1,7 @@
 package com.bignerdranch.android.weather.feature_5_days_forecast.data.repository
 
-import com.bignerdranch.android.weather.core.data.constants.API_ERROR_MESSAGE
-import com.bignerdranch.android.weather.core.data.constants.NO_INTERNET_MESSAGE
+import com.bignerdranch.android.weather.core.constants.API_ERROR_MESSAGE
+import com.bignerdranch.android.weather.core.constants.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.api.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.ForecastDto
 import com.bignerdranch.android.weather.core.data.dto.mapper.toForecastDay

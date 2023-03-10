@@ -39,7 +39,7 @@ import androidx.navigation.NavController
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
-import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ClickableIcon
+import com.bignerdranch.android.weather.core.presentation.components.ClickableIcon
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent

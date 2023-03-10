@@ -20,11 +20,13 @@ sealed interface Units {
     val options: List<Units>
 
     enum class TempUnits(override val key: Int, override val unitName: String) : Units {
-        CELSIUS(1, "°C"), FAHRENHEIT(2, "°F");
+        CELSIUS(0, "°C"), FAHRENHEIT(1, "°F");
 
         override val unitOf: String = "Temperature units"
         override val options: List<Units>
             get() = TempUnits.values().toList()
     }
+
+    enum class O : Units
 }
 

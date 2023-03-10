@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.bignerdranch.android.weather.core.data.constants.NO_INTERNET_MESSAGE
+import com.bignerdranch.android.weather.core.constants.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.CityWeatherCard
 import com.bignerdranch.android.weather.feature_search_city.presentation.components.MyCitiesSection
