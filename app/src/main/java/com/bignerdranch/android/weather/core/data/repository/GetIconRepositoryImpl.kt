@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import com.bignerdranch.android.weather.core.domain.repository.GetIconRepository
+import com.bignerdranch.android.weather.core.extensions.putInRange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -26,9 +27,9 @@ class GetIconRepositoryImpl @Inject constructor() : GetIconRepository {
             var minY = nonNullIcon.height
             var maxY = 1
             for (y in 1 until nonNullIcon.height) {
-                for (x in 1 until nonNullIcon.width) {
+                for (x in 1 until  nonNullIcon.width) {
                     val pixelAlpha = Color.alpha(nonNullIcon.getPixel(x, y))
-                    if (pixelAlpha == 255) {
+                    if (pixelAlpha > 0) {
                         if (x < minX) minX = x
                         if (y < minY) minY = y
                         if (x > maxX) maxX = x
@@ -36,7 +37,7 @@ class GetIconRepositoryImpl @Inject constructor() : GetIconRepository {
                     }
                 }
             }
-            Bitmap.createBitmap(nonNullIcon, minX, minY, maxX - minX, maxY - minY)
+            Bitmap.createBitmap(nonNullIcon, (minX-5).putInRange(1, minX), (minY-5).putInRange(1,minY), (maxX+5).putInRange(maxX, nonNullIcon.width) - (minX-5).putInRange(1, minX), (maxY+5).putInRange(maxY, nonNullIcon.height) - (minY-5).putInRange(1,minY))
         }
         return gettingIconBitmap.await()
     }

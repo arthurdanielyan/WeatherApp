@@ -33,8 +33,8 @@ fun FiveDaysForecastScreen(
             val maxTemp by remember {
                 var max = Double.MIN_VALUE
                 extremePoints.forEach {
-                    if (it.maxTempInCelsius > max) {
-                        max = it.maxTempInCelsius
+                    if (it.getMaxTemp() > max) {
+                        max = it.getMaxTemp()
                     }
                 }
                 mutableStateOf(max)
@@ -42,8 +42,8 @@ fun FiveDaysForecastScreen(
             val minTemp by remember {
                 var min = Double.MAX_VALUE
                 extremePoints.forEach {
-                    if (it.minTempInCelsius < min) {
-                        min = it.minTempInCelsius
+                    if (it.getMinTemp() < min) {
+                        min = it.getMinTemp()
                     }
                 }
                 mutableStateOf(min)

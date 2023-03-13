@@ -36,10 +36,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.presentation.Screen
-import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 import com.bignerdranch.android.weather.core.presentation.components.ClickableIcon
+import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
@@ -237,7 +236,7 @@ fun CityWeatherScreen(
                         if (weatherState.value != null) {
                             Spacer(Modifier.height(36.dp))
                             Text(
-                                text = "${weatherState.value.tempInCelsius.toIntIfPossible()}",
+                                text = weatherState.value.getTemp(),
                                 style = MaterialTheme.typography.h1
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -264,7 +263,7 @@ fun CityWeatherScreen(
                                         bitmap = weatherIcon.value.asImageBitmap(),
                                         contentDescription = weatherState.value.description,
                                         modifier = Modifier
-                                            .height((descTextHeight / LocalDensity.current.density).dp - 8.dp),
+                                            .size((descTextHeight / LocalDensity.current.density).dp - 8.dp),
                                         contentScale = ContentScale.Fit
                                     )
                                 else
@@ -286,22 +285,13 @@ fun CityWeatherScreen(
                                 .fillMaxSize()
                         ) {
                             ExtremePointsWeatherCard(
-                                minTemp = shortForecast.forecastDays[0].minTempInCelsius,
-                                maxTemp = shortForecast.forecastDays[0].maxTempInCelsius,
-                                description = shortForecast.forecastDays[0].description,
-                                day = shortForecast.forecastDays[0].dayName
+                                weatherInfo = shortForecast.forecastDays[0]
                             )
                             ExtremePointsWeatherCard(
-                                minTemp = shortForecast.forecastDays[1].minTempInCelsius,
-                                maxTemp = shortForecast.forecastDays[1].maxTempInCelsius,
-                                description = shortForecast.forecastDays[1].description,
-                                day = shortForecast.forecastDays[1].dayName
+                                weatherInfo = shortForecast.forecastDays[1]
                             )
                             ExtremePointsWeatherCard(
-                                minTemp = shortForecast.forecastDays[2].minTempInCelsius,
-                                maxTemp = shortForecast.forecastDays[2].maxTempInCelsius,
-                                description = shortForecast.forecastDays[2].description,
-                                day = shortForecast.forecastDays[2].dayName
+                                weatherInfo = shortForecast.forecastDays[2]
                             )
                         }
                     }

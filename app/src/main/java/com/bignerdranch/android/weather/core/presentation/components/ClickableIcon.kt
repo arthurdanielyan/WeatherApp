@@ -1,7 +1,6 @@
 package com.bignerdranch.android.weather.core.presentation.components
 
 import android.view.MotionEvent.*
-import androidx.compose.foundation.border
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -10,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.unit.dp
-import com.bignerdranch.android.weather.core.constants.log
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.IntSize
 import com.bignerdranch.android.weather.ui.theme.defaultTint
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -24,6 +23,7 @@ fun ClickableIcon(
 ) {
     var isIconHovered by remember { mutableStateOf(false) }
     var hoverColor = MaterialTheme.colors.defaultTint
+    var size by remember { mutableStateOf(IntSize(0,0)) }
     hoverColor = Color(
         red = rangeAsRgb(hoverColor.red.toInt()*255-50),
         green = rangeAsRgb(hoverColor.green.toInt()*255-50),
@@ -31,22 +31,26 @@ fun ClickableIcon(
     )
     Icon(
         modifier = modifier
+            .onGloballyPositioned {
+                size = it.size
+            }
             .pointerInteropFilter { event ->
                 when(event.actionMasked) {
                     ACTION_DOWN -> {
                         isIconHovered = true
-                        log(isIconHovered)
                     }
                     ACTION_CANCEL -> {
                         isIconHovered = false
-                        log(isIconHovered)
                     }
                     ACTION_UP -> {
-                        log(isIconHovered)
                         if(isIconHovered) {
                             onClick()
                             isIconHovered = false
                         }
+                    }
+                    ACTION_MOVE -> {
+                        if(!(event.x.toInt() in 0..size.width && event.y.toInt() in 0..size.height))
+                            isIconHovered = false
                     }
                 }
                 true

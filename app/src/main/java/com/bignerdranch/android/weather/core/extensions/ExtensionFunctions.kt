@@ -3,6 +3,12 @@ package com.bignerdranch.android.weather.core.extensions
 import androidx.compose.ui.geometry.Offset
 import java.util.*
 
+fun Int.putInRange(min: Int, max: Int) =
+    if(this in min..max) this
+    else if(this < min) min
+    else max
+
+
 fun Double.toIntIfPossible(): String {
     if(this == this.toInt().toDouble()) {
         return this.toInt().toString()

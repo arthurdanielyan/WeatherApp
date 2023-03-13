@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
@@ -27,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.android.weather.core.extensions.dayName
 import com.bignerdranch.android.weather.core.extensions.normalized
-import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.model.WeatherInfo
 import kotlin.math.abs
 
@@ -94,7 +94,7 @@ fun DayInfoCard(
             val drawableCanvasHeight = (this.size.height - canvasBottomMargin.dp.toPx()) // excludes bottom space for min temp texts
 
             // START of drawing MAX points
-            val countMaxFromMin = abs(minTemp - weatherInfo.maxTempInCelsius)
+            val countMaxFromMin = abs(minTemp - weatherInfo.getMaxTemp())
             val circleYMax = drawableCanvasHeight - countMaxFromMin*unitHeight.dp.toPx()
             drawCircle(
                 center = Offset(centerX, circleYMax.toFloat()),
@@ -106,7 +106,7 @@ fun DayInfoCard(
             )
             drawText(
                 textMeasurer = textMeasurer,
-                text = "${weatherInfo.maxTempInCelsius.toIntIfPossible()}°",
+                text = weatherInfo.getMaxTempString(),
                 topLeft = Offset(-15.dp.toPx(), (circleYMax - 36.dp.toPx()).toFloat()),
                 style = TextStyle(
                     color = Color.White,
@@ -116,26 +116,40 @@ fun DayInfoCard(
                 softWrap = false
             )
 
-            if (nextDayWeatherInfo != null) {
-                val nextCountFromMin = abs(minTemp - nextDayWeatherInfo.maxTempInCelsius)
-                val nextCircleYMax = (drawableCanvasHeight - nextCountFromMin*unitHeight.dp.toPx()).toFloat()
-                val direction = Offset(cardWidth, nextCircleYMax-circleYMax.toFloat()).normalized()
-                drawLine(
-                    color = Color.White,
-                    start = Offset(0f, circleYMax.toFloat())+direction*(circleRadius.dp.toPx()),
-                    end = Offset(cardWidth, nextCircleYMax),
-                    strokeWidth = graphStroke.dp.toPx()
-                )
-            }
+//            if (nextDayWeatherInfo != null) {
+//                val nextCountFromMin = abs(minTemp - nextDayWeatherInfo.getMaxTemp())
+//                val nextCircleYMax = (drawableCanvasHeight - nextCountFromMin*unitHeight.dp.toPx()).toFloat()
+//                val direction = Offset(cardWidth, nextCircleYMax-circleYMax.toFloat()).normalized()
+//                drawLine(
+//                    color = Color.White,
+//                    start = Offset(0f, circleYMax.toFloat())+direction*(circleRadius.dp.toPx()),
+//                    end = Offset(cardWidth, nextCircleYMax),
+//                    strokeWidth = graphStroke.dp.toPx()
+//                )
+//            }
             if(previousDayWeatherInfo != null) {
-                val previousCountFromMin = abs(minTemp - previousDayWeatherInfo.maxTempInCelsius)
+                val previousCountFromMin = abs(minTemp - previousDayWeatherInfo.getMaxTemp())
                 val previousCircleYMax = (drawableCanvasHeight - previousCountFromMin*unitHeight.dp.toPx()).toFloat()
                 val direction = Offset(-cardWidth, previousCircleYMax-circleYMax.toFloat()).normalized()
-                drawLine(
+//                drawLine(
+//                    color = Color.White,
+//                    start = Offset(0f, circleYMax.toFloat())+direction*(circleRadius.dp.toPx()),
+//                    end = Offset(-cardWidth, previousCircleYMax)-direction*circleRadius.dp.toPx(),
+//                    strokeWidth = graphStroke.dp.toPx()
+//                )
+                val startPosition = Offset(0f, circleYMax.toFloat())+Offset(-1f,0f)*circleRadius.dp.toPx()
+                val endPosition = Offset(-cardWidth, previousCircleYMax)-direction*circleRadius.dp.toPx()
+                val curveToPrevious = Path().apply {
+                    moveTo(startPosition.x, startPosition.y)
+                    quadraticBezierTo(-cardWidth/2, circleYMax.toFloat(),
+                        endPosition.x, endPosition.y)
+                }
+                drawPath(
+                    path = curveToPrevious,
                     color = Color.White,
-                    start = Offset(0f, circleYMax.toFloat())+direction*(circleRadius.dp.toPx()),
-                    end = Offset(-cardWidth, previousCircleYMax)-direction*circleRadius.dp.toPx(),
-                    strokeWidth = graphStroke.dp.toPx()
+                    style = Stroke(
+                        width = graphStroke.dp.toPx()
+                    )
                 )
                 /** Why canvas can draw at the left side outside of its box, but not at the right side?
                  * Because in the row items are put on top of each other?*/
@@ -143,7 +157,7 @@ fun DayInfoCard(
             // END of drawing MAX points
 
             // START of drawing MIN points
-            val countMinFromMin = abs(minTemp - weatherInfo.minTempInCelsius)
+            val countMinFromMin = abs(minTemp - weatherInfo.getMinTemp())
             val circleYMin = drawableCanvasHeight - countMinFromMin*unitHeight.dp.toPx()
             drawCircle(
                 center = Offset(centerX, circleYMin.toFloat()),
@@ -155,7 +169,7 @@ fun DayInfoCard(
             )
             drawText(
                 textMeasurer = textMeasurer,
-                text = "${weatherInfo.minTempInCelsius.toIntIfPossible()}°",
+                text = weatherInfo.getMinTempString(),
                 topLeft = Offset(-15.dp.toPx(), (circleYMin + 10.dp.toPx()).toFloat()),
                 style = TextStyle(
                     color = Color.White,
@@ -165,26 +179,40 @@ fun DayInfoCard(
                 softWrap = false
             )
 
-            if (nextDayWeatherInfo != null) {
-                val nextCountFromMin = abs(minTemp - nextDayWeatherInfo.minTempInCelsius)
-                val nextCircleYMin = (drawableCanvasHeight - nextCountFromMin*unitHeight.dp.toPx()).toFloat()
-                val direction = Offset(cardWidth, if(nextCircleYMin-circleYMin.toFloat()==0f){1f}else{nextCircleYMin-circleYMin.toFloat()}).normalized()
-                drawLine(
-                    color = Color.White,
-                    start = Offset(0f, circleYMin.toFloat())+direction*(circleRadius.dp.toPx()),
-                    end = Offset(cardWidth, nextCircleYMin),
-                    strokeWidth = graphStroke.dp.toPx()
-                )
-            }
+//            if (nextDayWeatherInfo != null) {
+//                val nextCountFromMin = abs(minTemp - nextDayWeatherInfo.getMinTemp())
+//                val nextCircleYMin = (drawableCanvasHeight - nextCountFromMin*unitHeight.dp.toPx()).toFloat()
+//                val direction = Offset(cardWidth, if(nextCircleYMin-circleYMin.toFloat()==0f){1f}else{nextCircleYMin-circleYMin.toFloat()}).normalized()
+//                drawLine(
+//                    color = Color.White,
+//                    start = Offset(0f, circleYMin.toFloat())+direction*(circleRadius.dp.toPx()),
+//                    end = Offset(cardWidth, nextCircleYMin),
+//                    strokeWidth = graphStroke.dp.toPx()
+//                )
+//            }
             if(previousDayWeatherInfo != null) {
-                val previousCountFromMin = abs(minTemp - previousDayWeatherInfo.minTempInCelsius)
+                val previousCountFromMin = abs(minTemp - previousDayWeatherInfo.getMinTemp())
                 val previousCircleYMin = (drawableCanvasHeight - previousCountFromMin*unitHeight.dp.toPx()).toFloat()
                 val direction = Offset(-cardWidth, previousCircleYMin-circleYMin.toFloat()).normalized()
-                drawLine(
+//                drawLine(
+//                    color = Color.White,
+//                    start = Offset(0f, circleYMin.toFloat())+direction*(circleRadius.dp.toPx()),
+//                    end = Offset(-cardWidth, previousCircleYMin)-direction*circleRadius.dp.toPx(),
+//                    strokeWidth = graphStroke.dp.toPx()
+//                )
+                val startPosition = Offset(0f, circleYMin.toFloat())+Offset(-1f,0f)*circleRadius.dp.toPx()
+                val endPosition = Offset(-cardWidth, previousCircleYMin)-direction*circleRadius.dp.toPx()
+                val curveToPrevious = Path().apply {
+                    moveTo(startPosition.x, startPosition.y)
+                    quadraticBezierTo(-cardWidth/2, circleYMin.toFloat(),
+                        endPosition.x, endPosition.y)
+                }
+                drawPath(
+                    path = curveToPrevious,
                     color = Color.White,
-                    start = Offset(0f, circleYMin.toFloat())+direction*(circleRadius.dp.toPx()),
-                    end = Offset(-cardWidth, previousCircleYMin)-direction*circleRadius.dp.toPx(),
-                    strokeWidth = graphStroke.dp.toPx()
+                    style = Stroke(
+                        width = graphStroke.dp.toPx()
+                    )
                 )
             }
             // END of drawing MIN points
