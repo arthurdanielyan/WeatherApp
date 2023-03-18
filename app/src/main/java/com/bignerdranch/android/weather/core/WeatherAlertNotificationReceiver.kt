@@ -1,6 +1,5 @@
 package com.bignerdranch.android.weather.core
 
-import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -10,8 +9,11 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.bignerdranch.android.weather.R
+import com.bignerdranch.android.weather.core.app_settings.SettingsStorage
 import com.bignerdranch.android.weather.core.constants.WEATHER_ALERT_NOTIFICATION_REQUEST_CODE
 import com.bignerdranch.android.weather.core.constants.log
+import com.bignerdranch.android.weather.core.constants.planWeatherAlertNotification
+import java.time.LocalTime
 
 
 class WeatherAlertNotificationReceiver : BroadcastReceiver() {
@@ -25,8 +27,15 @@ class WeatherAlertNotificationReceiver : BroadcastReceiver() {
             .setSmallIcon(R.drawable.ic_foreground_notification)
             .setAutoCancel(true)
         notificationManager.notify(0, builder.build())
-        val pendingIntent = PendingIntent.getBroadcast(context,
+        PendingIntent.getBroadcast(context,
             WEATHER_ALERT_NOTIFICATION_REQUEST_CODE, intent!!, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        planWeatherAlertNotification(
+            context,
+            LocalTime.of(
+                SettingsStorage.notificationTime.substringBefore(':').toInt(),
+                SettingsStorage.notificationTime.substringAfter(':').toInt()
+            )
+        )
 
         log("notification sent")
     }
