@@ -12,7 +12,7 @@ import com.bignerdranch.android.weather.core.model.WeatherInfoList
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
-import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.bignerdranch.android.weather.core.data.room.db_schemas.MyCitiesDbSchema
-import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
 import kotlinx.coroutines.flow.Flow
 
 @Dao

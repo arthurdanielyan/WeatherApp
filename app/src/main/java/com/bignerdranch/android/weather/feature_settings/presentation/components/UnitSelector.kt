@@ -7,7 +7,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -127,36 +126,9 @@ fun UnitSelector(
                             selectedItemIndex = unit.options.indexOfFirst { it.unitName == chosenUnit.unitName },
                             items = unit.options,
                         )
-//                        unit.options.forEach { unit: Units ->
-//                            Text(
-//                                text = unit.unitName,
-//                                color = if (unit.unitName == chosenUnit.unitName) Color.Blue else Color.White
-//                            )
-//                        }
                     }
                 }
             }
         }
     }
 }
-
-
-//            DropdownMenu(
-//                modifier = Modifier
-//                    .clip(RoundedCornerShape(8.dp)),
-//                expanded = expanded,
-//                onDismissRequest = {
-//                    expanded = false
-//                },
-//            ) {
-//                unit.options.forEach { unit: Units ->
-//                    DropdownMenuItem(onClick = {
-//                        onChooseUnit(unit)
-//                    }) {
-//                        Text(
-//                            text = unit.unitName,
-//                            color = if (unit.unitName == chosenUnit.unitName) Color.Blue else Color.White
-//                        )
-//                    }
-//                }
-//            }

@@ -8,5 +8,8 @@ class MyCitiesDbSchema {
         const val COL_COUNTRY = "column_country"
         const val COL_TEMP_IN_CELSIUS = "column_temp_in_celsius"
         const val COL_TEMP_IN_FAHRENHEIT = "column_temp_in_fahrenheit"
+        const val COL_LATITUDE = "column_latitude"
+        const val COL_LONGITUDE = "column_longitude"
+        const val COL_ID = "column_id"
     }
 }

@@ -1,7 +1,7 @@
 package com.bignerdranch.android.weather.feature_city_weather.domain.usecases
 
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
-import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

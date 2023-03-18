@@ -20,11 +20,13 @@ fun CityWeatherDto.toCityWeather(): CityWeather =
         description = current.condition.description,
         iconUrl = current.condition.iconUrl,
         icon = null,
-        pressure = current.pressure
+        pressure = current.pressure,
+        lat = this.lat,
+        lon = this.lon
     )
 
 //2022-10-28"
-fun ForecastDayDto.toForecastDay(): WeatherInfo =
+fun ForecastDayDto.toWeatherInfo(): WeatherInfo =
     WeatherInfo(
         date = Date(
             day = this.date.substring(this.date.length-2).toInt(),
@@ -42,7 +44,7 @@ fun ForecastDayDto.toForecastDay(): WeatherInfo =
 
 fun ForecastDto.toShortForecast(): WeatherInfoList =
     WeatherInfoList(
-        this.forecastDays.forecastDays.map { it.toForecastDay() }
+        this.forecastDays.forecastDays.map { it.toWeatherInfo() }
     )
 
 fun HourDto.toHourForecast(): HourForecast =

@@ -3,11 +3,11 @@ package com.bignerdranch.android.weather.feature_city_weather.domain.model
 import android.graphics.Bitmap
 import com.bignerdranch.android.weather.core.app_settings.Units
 import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
-import com.bignerdranch.android.weather.feature_search_city.data.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
 
 fun CityWeather.toShortWeatherInfo() =
     ShortWeatherInfo(
-        city, country, tempInCelsius, tempInFahrenheit
+        city, country, tempInCelsius, tempInFahrenheit, lat, lon
     )
 
 data class CityWeather(
@@ -19,7 +19,9 @@ data class CityWeather(
     val description: String,
     val iconUrl: String,
     var icon: Bitmap?,
-    val pressure: Int
+    val pressure: Int,
+    val lat: Double,
+    val lon: Double
 ) {
     fun getTemp(): String =
         when(Units.selectedTempUnit) {

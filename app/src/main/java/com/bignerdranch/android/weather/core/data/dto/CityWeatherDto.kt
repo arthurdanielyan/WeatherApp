@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class CityWeatherDto(
     @SerializedName("location") val location: Location,
-    @SerializedName("current") val current: Current
+    @SerializedName("current") val current: Current,
+    @SerializedName("lat") val lat: Double,
+    @SerializedName("lon") val lon: Double
 )
 
 data class Location(

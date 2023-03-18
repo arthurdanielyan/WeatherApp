@@ -4,7 +4,7 @@ import com.bignerdranch.android.weather.core.constants.API_ERROR_MESSAGE
 import com.bignerdranch.android.weather.core.constants.NO_INTERNET_MESSAGE
 import com.bignerdranch.android.weather.core.data.api.WeatherApi
 import com.bignerdranch.android.weather.core.data.dto.ForecastDto
-import com.bignerdranch.android.weather.core.data.dto.mapper.toForecastDay
+import com.bignerdranch.android.weather.core.data.dto.mapper.toWeatherInfo
 import com.bignerdranch.android.weather.core.model.WeatherInfo
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.core.model.WeatherInfoList
@@ -35,7 +35,7 @@ class FiveDaysForecastRepositoryImpl @Inject constructor(
             }
             val forecastDays = mutableListOf<WeatherInfo>()
             forecastDaysDto.forEach { shortForecastDto ->
-                forecastDays.add(shortForecastDto.forecastDays.forecastDays[0].toForecastDay())
+                forecastDays.add(shortForecastDto.forecastDays.forecastDays[0].toWeatherInfo())
             }
             val fiveDayForecast = WeatherInfoList(forecastDays)
             emit(Result.Success(fiveDayForecast))

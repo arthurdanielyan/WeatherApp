@@ -71,11 +71,6 @@ fun FiveDaysForecastScreen(
                 days.forEachIndexed { index, weatherInfo ->
                     DayInfoCard(
                         weatherInfo = weatherInfo,
-                        nextDayWeatherInfo = try {
-                            days[index + 1]
-                        } catch (e: IndexOutOfBoundsException) {
-                            null
-                        },
                         previousDayWeatherInfo = try {
                             days[index - 1]
                         } catch (e: IndexOutOfBoundsException) {
