@@ -47,17 +47,11 @@ class MainActivity : ComponentActivity() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        planWeatherAlertNotification(this as Context,
-            LocalTime.of(
-                SettingsStorage.notificationTime.substringBefore(':').toInt(),
-                SettingsStorage.notificationTime.substringAfter(':').toInt()
-            ))
-
         val searchCityViewModel by viewModels<SearchCityViewModel>()
 
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                searchCityViewModel.showSplashScreen
+                searchCityViewModel.showSplashScreen || !(application as WeatherApplication).settingsLoaded
             }
         }
 

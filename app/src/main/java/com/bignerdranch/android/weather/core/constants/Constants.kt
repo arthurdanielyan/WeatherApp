@@ -4,9 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.bignerdranch.android.weather.core.WeatherAlertNotificationReceiver
 import java.time.LocalTime
 import java.util.*
@@ -20,7 +18,7 @@ const val ARG_CITY = "passing_city_key"
 
 inline fun log(log: Any?) = Log.d("myLogs", log.toString())
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun planWeatherAlertNotification(context: Context, time: LocalTime) {
     val intent = Intent(context, WeatherAlertNotificationReceiver::class.java)
     intent.action = "android.intent.action.ALARM"
@@ -30,12 +28,16 @@ fun planWeatherAlertNotification(context: Context, time: LocalTime) {
         set(Calendar.HOUR_OF_DAY, time.hour)
         set(Calendar.MINUTE, time.minute)
         set(Calendar.SECOND, 0)
-    }.timeInMillis
+    }
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    if(System.currentTimeMillis() <= triggerTime) {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+
+    if(System.currentTimeMillis() <= triggerTime.timeInMillis) {
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime.timeInMillis, pendingIntent)
+    } else {
+        triggerTime.add(Calendar.DAY_OF_MONTH, 1)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime.timeInMillis, pendingIntent)
     }
 }
 

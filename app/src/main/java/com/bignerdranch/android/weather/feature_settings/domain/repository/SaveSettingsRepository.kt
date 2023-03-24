@@ -1,4 +1,4 @@
-package com.bignerdranch.android.weather.feature_settings.model.repository
+package com.bignerdranch.android.weather.feature_settings.domain.repository
 
 interface SaveSettingsRepository {
 

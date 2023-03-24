@@ -4,5 +4,4 @@ object SettingsStorage {
     var isWeatherAlertNotificationsEnabled = false
     var starredCityId = -1
     var notificationTime = "00:00"
-
 }

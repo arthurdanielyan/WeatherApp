@@ -1,6 +1,6 @@
-package com.bignerdranch.android.weather.feature_settings.model.usecases
+package com.bignerdranch.android.weather.feature_settings.domain.usecases
 
-import com.bignerdranch.android.weather.feature_settings.model.repository.SaveSettingsRepository
+import com.bignerdranch.android.weather.feature_settings.domain.repository.SaveSettingsRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

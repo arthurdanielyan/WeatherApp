@@ -82,7 +82,7 @@ fun UnitSelector(
                 onDismissRequest = {
                     expanded = false
                 },
-                offset = IntOffset(-20, 150)
+                offset = IntOffset(0, 150)
             ) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = expanded,
@@ -109,13 +109,13 @@ fun UnitSelector(
                                 .fillMaxWidth(),
                             unselectedItem = { item ->
                                 OptionItem(
-                                    item = item,
+                                    optionName = item.unitName,
                                     selected = false
                                 )
                             },
                             selectedItem = { item ->
                                 OptionItem(
-                                    item = item,
+                                    optionName = item.unitName,
                                     selected = true
                                 )
                             },

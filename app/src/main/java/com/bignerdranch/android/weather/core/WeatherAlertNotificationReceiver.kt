@@ -6,19 +6,15 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.bignerdranch.android.weather.R
 import com.bignerdranch.android.weather.core.app_settings.SettingsStorage
 import com.bignerdranch.android.weather.core.constants.WEATHER_ALERT_NOTIFICATION_REQUEST_CODE
-import com.bignerdranch.android.weather.core.constants.log
 import com.bignerdranch.android.weather.core.constants.planWeatherAlertNotification
 import java.time.LocalTime
 
 
 class WeatherAlertNotificationReceiver : BroadcastReceiver() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context?, intent: Intent?) {
         val notificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val builder = Notification.Builder(context, "weather_alert")
@@ -36,7 +32,5 @@ class WeatherAlertNotificationReceiver : BroadcastReceiver() {
                 SettingsStorage.notificationTime.substringAfter(':').toInt()
             )
         )
-
-        log("notification sent")
     }
 }

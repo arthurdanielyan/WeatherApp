@@ -1,13 +1,11 @@
 package com.bignerdranch.android.weather.feature_settings.presentation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -22,6 +20,8 @@ import com.bignerdranch.android.weather.core.app_settings.Units
 import com.bignerdranch.android.weather.core.constants.planWeatherAlertNotification
 import com.bignerdranch.android.weather.core.constants.turnOffNotification
 import com.bignerdranch.android.weather.core.presentation.components.TopBar
+import com.bignerdranch.android.weather.feature_settings.presentation.components.PopupSelector
+import com.bignerdranch.android.weather.feature_settings.presentation.components.SettingOptionRow
 import com.bignerdranch.android.weather.feature_settings.presentation.components.UnitSelector
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
@@ -30,7 +30,6 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
@@ -52,7 +51,8 @@ fun SettingsScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             TopBar(
                 screenTitle = "Settings",
@@ -117,28 +117,38 @@ fun SettingsScreen(
                     }
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        timePickerDialogState.show()
-                    }
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.weight(2f),
-                    text = "Alert time",
-                    style = MaterialTheme.typography.h5,
-                    color = Color.White
+            SettingOptionRow(
+                onClick = timePickerDialogState::show,
+                settingTitle = "Alert time",
+                selectedOption = DateTimeFormatter.ofPattern("HH:mm").format(pickedTime),
+                showDropDownIcon = false
+            )
+            var isCitySelectorExpanded by remember { mutableStateOf(false) }
+            val cities by viewModel.myCities.collectAsState()
+            Box {
+                SettingOptionRow(
+                    onClick = {
+                        isCitySelectorExpanded = true
+                    },
+                    settingTitle = "Select home city",
+                    selectedOption = "City",
+                    showDropDownIcon = true
                 )
-                Text(
-                    text = DateTimeFormatter.ofPattern("HH:mm").format(pickedTime),
-                    style = MaterialTheme.typography.subtitle2,
-                    color = Color(0xFF818181)
+                PopupSelector(
+                    options = cities,
+                    optionName = {
+                        it.cityName
+                    },
+                    onSelect = {
+                        isCitySelectorExpanded = false
+                    },
+                    onDropdownStateChange = {
+                        isDropdownOpen = it
+                        isCitySelectorExpanded = it
+                    },
+                    expanded = isCitySelectorExpanded
                 )
             }
-            // NOTIFICATION SETTINGS end
         }
         Box(
             modifier = Modifier

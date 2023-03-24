@@ -14,6 +14,9 @@ interface MyCitiesDao {
     @Query("SELECT * FROM ${MyCitiesDbSchema.TABLE_NAME}")
     fun getSavedCities(): Flow<List<ShortWeatherInfo>>
 
+    @Query("SELECT * FROM ${MyCitiesDbSchema.TABLE_NAME}")
+    fun getSavedCitiesAsList(): List<ShortWeatherInfo>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: ShortWeatherInfo)
 }
