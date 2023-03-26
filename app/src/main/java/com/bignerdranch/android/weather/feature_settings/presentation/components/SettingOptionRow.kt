@@ -17,15 +17,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SettingOptionRow(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     settingTitle: String,
     selectedOption: String,
-    showDropDownIcon: Boolean
+    showDropDownIcon: Boolean,
+    enabled: Boolean
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(
+                enabled = enabled,
+                onClick = onClick
+            )
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -40,10 +45,11 @@ fun SettingOptionRow(
             style = MaterialTheme.typography.subtitle2,
             color = Color(0xFF818181)
         )
-        if(showDropDownIcon)
-        Icon(
-            imageVector = Icons.Default.ArrowDropDown,
-            contentDescription = "Dropdown"
-        )
+        if(showDropDownIcon) {
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = "Dropdown"
+            )
+        }
     }
 }

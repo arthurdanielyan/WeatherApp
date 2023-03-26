@@ -22,7 +22,6 @@ import com.bignerdranch.android.weather.core.constants.turnOffNotification
 import com.bignerdranch.android.weather.core.presentation.components.TopBar
 import com.bignerdranch.android.weather.feature_settings.presentation.components.PopupSelector
 import com.bignerdranch.android.weather.feature_settings.presentation.components.SettingOptionRow
-import com.bignerdranch.android.weather.feature_settings.presentation.components.UnitSelector
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
@@ -35,7 +34,11 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     navController: NavController
 ) {
-    var isDropdownOpen by remember { mutableStateOf(false) }
+    var isCitySelectorExpanded by remember { mutableStateOf(false) }
+    var isTempSelectorExpanded by remember { mutableStateOf(false) }
+    var isDropdownOpen by remember(isCitySelectorExpanded, isTempSelectorExpanded) {
+        mutableStateOf(isCitySelectorExpanded || isTempSelectorExpanded)
+    }
     val timePickerDialogState = rememberMaterialDialogState()
     val context = LocalContext.current
     var pickedTime by remember {
@@ -71,14 +74,40 @@ fun SettingsScreen(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
             )
-            UnitSelector(
-                unit = Units.TempUnits.CELSIUS,
-                chosenUnit = Units.selectedTempUnit,
-                onChooseUnit = {
-                    viewModel.saveUnit(it)
-                },
-                onDropdownStateChange = { isDropdownOpen = it }
-            )
+            Box {
+                SettingOptionRow(
+                    onClick = { isTempSelectorExpanded = true },
+                    settingTitle = "Temperature units",
+                    selectedOption =
+                    Units.TempUnits.CELSIUS.options.find {
+                        it.key == Units.selectedTempUnitInt
+                    }!!.unitName,
+                    showDropDownIcon = true,
+                    enabled = !isDropdownOpen
+                )
+                PopupSelector(
+                    options = Units.TempUnits.CELSIUS.options,
+                    optionName = {
+                        it.unitName
+                    },
+                    onSelect = {
+                        isTempSelectorExpanded = false
+                        viewModel.saveUnit(it)
+                    },
+                    onDropdownStateChange = {
+                        isTempSelectorExpanded = it
+                    },
+                    expanded = isTempSelectorExpanded
+                )
+            }
+//            UnitSelector(
+//                unit = Units.TempUnits.CELSIUS,
+//                chosenUnit = Units.selectedTempUnit,
+//                onChooseUnit = {
+//                    viewModel.saveUnit(it)
+//                },
+//                onDropdownStateChange = { isDropdownOpen = it }
+//            )
             // NOTIFICATION SETTINGS start
             Text(
                 modifier = Modifier
@@ -121,9 +150,9 @@ fun SettingsScreen(
                 onClick = timePickerDialogState::show,
                 settingTitle = "Alert time",
                 selectedOption = DateTimeFormatter.ofPattern("HH:mm").format(pickedTime),
-                showDropDownIcon = false
+                showDropDownIcon = false,
+                enabled = !isDropdownOpen
             )
-            var isCitySelectorExpanded by remember { mutableStateOf(false) }
             val cities by viewModel.myCities.collectAsState()
             Box {
                 SettingOptionRow(
@@ -132,7 +161,8 @@ fun SettingsScreen(
                     },
                     settingTitle = "Select home city",
                     selectedOption = "City",
-                    showDropDownIcon = true
+                    showDropDownIcon = true,
+                    enabled = !isDropdownOpen
                 )
                 PopupSelector(
                     options = cities,

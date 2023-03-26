@@ -3,16 +3,18 @@ package com.bignerdranch.android.weather.feature_settings.presentation.component
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.bignerdranch.android.weather.core.constants.log
 
@@ -28,9 +30,9 @@ fun<T> PopupSelector(
 
     log("PopupSelector composition")
 
-
+    val density = LocalDensity.current
     Popup(
-//        alignment = Alignment.BottomEnd,
+        alignment = Alignment.TopEnd,
         properties = PopupProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
@@ -38,7 +40,14 @@ fun<T> PopupSelector(
         onDismissRequest = {
             onDropdownStateChange(false)
         },
-        popupPositionProvider = BottomEndPopupPositionProvider(),
+        offset = IntOffset(
+            density.run {
+                -(16.toDp().toPx().toInt())
+            },
+            density.run {
+                180.toDp().toPx().toInt()
+            }
+        )
     ) {
         AnimatedVisibility(
             visible = expanded,
@@ -51,19 +60,16 @@ fun<T> PopupSelector(
                 animationSpec = tween(durationMillis = 500)
             )
         ) {
-            Column( //options goes here
+            Column(
                 modifier = Modifier
                     .background(
                         color = Color(0xFF353535),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    .height(300.dp)
-                    .widthIn(50.dp, 200.dp)
+                    .heightIn(0.dp, 300.dp)
                     .clip(RoundedCornerShape(12.dp))
             ) {
                 SingleSelectableLazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     unselectedItem = { city ->
                         OptionItem(
                             optionName = optionName(city),
@@ -78,22 +84,9 @@ fun<T> PopupSelector(
                     },
                     onSelect = onSelect,
                     selectedItemIndex = 0,
-                    items = options,
+                    items = options
                 )
             }
         }
-    }
-}
-
-class BottomEndPopupPositionProvider : PopupPositionProvider {
-    override fun calculatePosition(
-        anchorBounds: IntRect,
-        windowSize: IntSize,
-        layoutDirection: LayoutDirection,
-        popupContentSize: IntSize
-    ): IntOffset {
-        val x = anchorBounds.right - popupContentSize.width
-        val y = anchorBounds.bottom
-        return IntOffset(x, y)
     }
 }

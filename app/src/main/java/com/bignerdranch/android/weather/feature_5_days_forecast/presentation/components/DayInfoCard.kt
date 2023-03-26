@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -84,6 +85,9 @@ fun DayInfoCard(
         }
         Spacer(modifier = Modifier.height(60.dp))
         val canvasBottomMargin by remember { mutableStateOf(17) } // used to make enough space for min temp texts
+        val cardWidthInDp = LocalDensity.current.run {
+            cardWidth.toDp()
+        }
         Canvas(
             modifier = Modifier
                 .height(canvasHeight.dp + canvasBottomMargin.dp)
@@ -105,7 +109,7 @@ fun DayInfoCard(
             drawText(
                 textMeasurer = textMeasurer,
                 text = weatherInfo.getMaxTempString(),
-                topLeft = Offset(-15.dp.toPx(), (circleYMax - 36.dp.toPx()).toFloat()),
+                topLeft = Offset((-cardWidthInDp / 2.5f).toPx(), (circleYMax - 36.dp.toPx()).toFloat()),
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 17.sp
@@ -113,18 +117,6 @@ fun DayInfoCard(
                 overflow = TextOverflow.Visible,
                 softWrap = false
             )
-
-//            if (nextDayWeatherInfo != null) {
-//                val nextCountFromMin = abs(minTemp - nextDayWeatherInfo.getMaxTemp())
-//                val nextCircleYMax = (drawableCanvasHeight - nextCountFromMin*unitHeight.dp.toPx()).toFloat()
-//                val direction = Offset(cardWidth, nextCircleYMax-circleYMax.toFloat()).normalized()
-//                drawLine(
-//                    color = Color.White,
-//                    start = Offset(0f, circleYMax.toFloat())+direction*(circleRadius.dp.toPx()),
-//                    end = Offset(cardWidth, nextCircleYMax),
-//                    strokeWidth = graphStroke.dp.toPx()
-//                )
-//            }
             if(previousDayWeatherInfo != null) {
                 val previousCountFromMin = abs(minTemp - previousDayWeatherInfo.getMaxTemp())
                 val previousCircleYMax = (drawableCanvasHeight - previousCountFromMin*unitHeight.dp.toPx()).toFloat()
@@ -154,7 +146,7 @@ fun DayInfoCard(
             drawText(
                 textMeasurer = textMeasurer,
                 text = weatherInfo.getMinTempString(),
-                topLeft = Offset(-15.dp.toPx(), (circleYMin + 10.dp.toPx()).toFloat()),
+                topLeft = Offset((-cardWidthInDp / 2.5f).toPx(), (circleYMin + 13.dp.toPx()).toFloat()),
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 17.sp

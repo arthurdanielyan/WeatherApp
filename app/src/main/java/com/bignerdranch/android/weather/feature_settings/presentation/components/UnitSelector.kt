@@ -104,28 +104,28 @@ fun UnitSelector(
                             )
                             .clip(RoundedCornerShape(12.dp))
                     ) {
-                        SingleSelectableLazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            unselectedItem = { item ->
-                                OptionItem(
-                                    optionName = item.unitName,
-                                    selected = false
-                                )
-                            },
-                            selectedItem = { item ->
-                                OptionItem(
-                                    optionName = item.unitName,
-                                    selected = true
-                                )
-                            },
-                            onSelect = { item ->
-                                onChooseUnit(item)
-                                expanded = false
-                            },
-                            selectedItemIndex = unit.options.indexOfFirst { it.unitName == chosenUnit.unitName },
-                            items = unit.options,
-                        )
+//                        SingleSelectableLazyColumn(
+//                            modifier = Modifier
+//                                .fillMaxWidth(),
+//                            unselectedItem = { item ->
+//                                OptionItem(
+//                                    optionName = item.unitName,
+//                                    selected = false
+//                                )
+//                            },
+//                            selectedItem = { item ->
+//                                OptionItem(
+//                                    optionName = item.unitName,
+//                                    selected = true
+//                                )
+//                            },
+//                            onSelect = { item ->
+//                                onChooseUnit(item)
+//                                expanded = false
+//                            },
+//                            selectedItemIndex = unit.options.indexOfFirst { it.unitName == chosenUnit.unitName },
+//                            items = unit.options,
+//                        )
                     }
                 }
             }

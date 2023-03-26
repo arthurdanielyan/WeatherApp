@@ -22,7 +22,8 @@ fun <T> SingleSelectableLazyColumn (
     ) {
         itemsIndexed(items) {index, item ->
             Box(
-                modifier = Modifier.clickable {
+                modifier = Modifier.
+                clickable {
                     onSelect(item)
                     selectedItemIndexUpt = index
                 }

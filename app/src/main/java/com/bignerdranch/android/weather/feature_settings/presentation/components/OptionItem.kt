@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,8 +20,8 @@ fun OptionItem(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
             .background(color = if(selected) Color(0x432D2DFF) else Color.Transparent)
+            .fillMaxWidth()
             .padding(16.dp)
     ) {
         Text(
