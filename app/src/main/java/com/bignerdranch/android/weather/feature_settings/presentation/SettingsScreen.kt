@@ -36,6 +36,7 @@ fun SettingsScreen(
 ) {
     var isCitySelectorExpanded by remember { mutableStateOf(false) }
     var isTempSelectorExpanded by remember { mutableStateOf(false) }
+    var notificationToggleSwitch by remember { mutableStateOf(SettingsStorage.isWeatherAlertNotificationsEnabled) }
     var isDropdownOpen by remember(isCitySelectorExpanded, isTempSelectorExpanded) {
         mutableStateOf(isCitySelectorExpanded || isTempSelectorExpanded)
     }
@@ -104,14 +105,6 @@ fun SettingsScreen(
                     expanded = isTempSelectorExpanded
                 )
             }
-//            UnitSelector(
-//                unit = Units.TempUnits.CELSIUS,
-//                chosenUnit = Units.selectedTempUnit,
-//                onChooseUnit = {
-//                    viewModel.saveUnit(it)
-//                },
-//                onDropdownStateChange = { isDropdownOpen = it }
-//            )
             // NOTIFICATION SETTINGS start
             Text(
                 modifier = Modifier
@@ -136,12 +129,11 @@ fun SettingsScreen(
                 Text(
                     text = "Daily weather alerts"
                 )
-                var checked by remember { mutableStateOf(SettingsStorage.isWeatherAlertNotificationsEnabled) }
                 Switch(
-                    checked = checked,
+                    checked = notificationToggleSwitch,
                     onCheckedChange = {
                         viewModel.saveIsNotificationOn(it)
-                        checked = it
+                        notificationToggleSwitch = it
                         if(!it) {
                             turnOffNotification(context)
                         } else {
@@ -204,6 +196,7 @@ fun SettingsScreen(
                 text = "Save",
                 onClick = {
                     viewModel.saveTime("${pickedTime.hour}:${pickedTime.minute}")
+                    if(notificationToggleSwitch)
                     planWeatherAlertNotification(context, pickedTime)
                 }
             )

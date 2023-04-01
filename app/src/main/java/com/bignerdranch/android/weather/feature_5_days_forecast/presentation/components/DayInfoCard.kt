@@ -117,7 +117,7 @@ fun DayInfoCard(
             drawText(
                 textMeasurer = textMeasurer,
                 text = weatherInfo.getMaxTempString(),
-                topLeft = Offset((-cardWidthInDp/2).toPx() + 8.dp.toPx(), (circleYMax - 36.dp.toPx()).toFloat()),
+                topLeft = Offset((-cardWidthInDp/2.5f).toPx(), (circleYMax - 36.dp.toPx()).toFloat()),
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 17.sp
