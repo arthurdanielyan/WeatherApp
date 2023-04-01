@@ -30,6 +30,7 @@ class SaveSettingsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveCity(cityId: Float) {
+        SettingsStorage.homeCityId = cityId
         sharedPref.edit().putFloat(SHARED_PREF_SAVED_CITY, cityId).apply()
     }
 }

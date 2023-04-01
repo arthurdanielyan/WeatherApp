@@ -19,11 +19,11 @@ class LoadSettingsRepositoryImpl @Inject constructor (
         SettingsStorage.notificationTime = sharedPreferences.getString(SHARED_PREF_NOTIFICATION_TIME, "00:00") ?: "00:00"
         SettingsStorage.isWeatherAlertNotificationsEnabled = sharedPreferences.getBoolean(SHARED_PREF_IS_NOTIFICATION_ON, true)
         SettingsStorage.homeCityId = sharedPreferences.getFloat(SHARED_PREF_SAVED_CITY, -1f)
-        val city = myCitiesDao.getCity(SettingsStorage.homeCityId)
-        if(city != null)
-        SettingsStorage.homeCity = MyCity(city.city, city.id)
-        else SettingsStorage.homeCity = null
-
-        log(SettingsStorage.homeCity)
+//        val city = myCitiesDao.getCity(SettingsStorage.homeCityId)
+//        if(city != null)
+//        SettingsStorage.homeCity = MyCity(city.city, city.id)
+//        else SettingsStorage.homeCity = null
+//
+//        log(SettingsStorage.homeCity)
     }
 }

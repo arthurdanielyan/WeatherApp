@@ -164,11 +164,14 @@ fun SettingsScreen(
                         isCitySelectorExpanded = true
                     },
                     settingTitle = "Select home city",
-                    selectedOption = "City",
+                    selectedOption = cities.find { it.id == SettingsStorage.homeCityId }?.cityName ?:
+                        try {
+                            cities[0].cityName
+                        } catch (e: IndexOutOfBoundsException) { "Loading..." },
                     showDropDownIcon = true,
                     enabled = !isDropdownOpen
                 )
-                val selectedCityIndex = cities.indexOfFirst { it == SettingsStorage.homeCity }
+                val selectedCityIndex = cities.indexOfFirst { it.id == SettingsStorage.homeCityId }
                 PopupSelector( // HOME CITY SELECTOR
                     options = cities,
                     selectedItemIndex =
