@@ -3,11 +3,8 @@ package com.bignerdranch.android.weather.feature_settings.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.weather.core.app_settings.Units
-import com.bignerdranch.android.weather.feature_settings.domain.usecases.GetMyCitiesUseCase
 import com.bignerdranch.android.weather.feature_settings.domain.model.MyCity
-import com.bignerdranch.android.weather.feature_settings.domain.usecases.SaveTempUnitUseCase
-import com.bignerdranch.android.weather.feature_settings.domain.usecases.SaveTimeUseCase
-import com.bignerdranch.android.weather.feature_settings.domain.usecases.SaveWeatherAlertOnUseCase
+import com.bignerdranch.android.weather.feature_settings.domain.usecases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +16,8 @@ class SettingsViewModel @Inject constructor(
     private val saveTempUnitUseCase: SaveTempUnitUseCase,
     private val saveTimeUseCase: SaveTimeUseCase,
     private val saveWeatherAlertOnUseCase: SaveWeatherAlertOnUseCase,
-    private val getMyCitiesUseCase: GetMyCitiesUseCase
+    private val getMyCitiesUseCase: GetMyCitiesUseCase,
+    private val saveCityUseCase: SaveCityUseCase
 ) : ViewModel() {
 
     private val _myCities = MutableStateFlow(emptyList<MyCity>())
@@ -54,6 +52,12 @@ class SettingsViewModel @Inject constructor(
     fun saveIsNotificationOn(isOn: Boolean) {
         viewModelScope.launch {
             saveWeatherAlertOnUseCase(isOn)
+        }
+    }
+
+    fun saveCity(cityId: Float) {
+        viewModelScope.launch {
+            saveCityUseCase(cityId)
         }
     }
 }

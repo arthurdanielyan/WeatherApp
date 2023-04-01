@@ -19,4 +19,7 @@ interface MyCitiesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: ShortWeatherInfo)
+
+    @Query("SELECT * FROM ${MyCitiesDbSchema.TABLE_NAME} WHERE ${MyCitiesDbSchema.COL_ID} = :cityId LIMIT 1")
+    suspend fun getCity(cityId: Float): ShortWeatherInfo?
 }

@@ -6,18 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -26,6 +23,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bignerdranch.android.weather.core.constants.log
 import com.bignerdranch.android.weather.core.extensions.dayName
 import com.bignerdranch.android.weather.core.extensions.normalized
 import com.bignerdranch.android.weather.core.model.WeatherInfo
@@ -65,9 +63,18 @@ fun DayInfoCard(
                 .height(90.dp),//must be a fixed height so that the top of the canvas would be a straight line
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val density = LocalDensity.current
+            var textSize by remember { mutableStateOf(15.sp) }
             Text(
+                modifier = Modifier
+                    .onSizeChanged {
+                        if(it.width > cardWidth - 2*density.run { 5.dp.toPx() }) {
+                            textSize = (textSize.value - 1).sp
+                        }
+                    },
                 text = dayName(weatherInfo.date.day),
-                fontSize = 15.sp
+                fontSize = textSize,
+                maxLines = 1
             )
             Text(
                 text = "${weatherInfo.date.day}/${weatherInfo.date.month}",
@@ -106,10 +113,11 @@ fun DayInfoCard(
                     width = graphStroke.dp.toPx()
                 )
             )
+            log((-cardWidthInDp))
             drawText(
                 textMeasurer = textMeasurer,
                 text = weatherInfo.getMaxTempString(),
-                topLeft = Offset((-cardWidthInDp / 2.5f).toPx(), (circleYMax - 36.dp.toPx()).toFloat()),
+                topLeft = Offset((-cardWidthInDp/2).toPx() + 8.dp.toPx(), (circleYMax - 36.dp.toPx()).toFloat()),
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 17.sp

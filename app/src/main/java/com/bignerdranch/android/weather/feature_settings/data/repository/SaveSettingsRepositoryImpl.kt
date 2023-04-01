@@ -5,6 +5,7 @@ import com.bignerdranch.android.weather.core.app_settings.SettingsStorage
 import com.bignerdranch.android.weather.core.app_settings.Units
 import com.bignerdranch.android.weather.core.constants.SHARED_PREF_IS_NOTIFICATION_ON
 import com.bignerdranch.android.weather.core.constants.SHARED_PREF_NOTIFICATION_TIME
+import com.bignerdranch.android.weather.core.constants.SHARED_PREF_SAVED_CITY
 import com.bignerdranch.android.weather.core.constants.SHARED_PREF_TEMP_UNIT
 import com.bignerdranch.android.weather.feature_settings.domain.repository.SaveSettingsRepository
 import javax.inject.Inject
@@ -26,5 +27,9 @@ class SaveSettingsRepositoryImpl @Inject constructor(
     override suspend fun saveWeatherAlertOn(isOn: Boolean) {
         SettingsStorage.isWeatherAlertNotificationsEnabled = isOn
         sharedPref.edit().putBoolean(SHARED_PREF_IS_NOTIFICATION_ON, isOn).apply()
+    }
+
+    override suspend fun saveCity(cityId: Float) {
+        sharedPref.edit().putFloat(SHARED_PREF_SAVED_CITY, cityId).apply()
     }
 }

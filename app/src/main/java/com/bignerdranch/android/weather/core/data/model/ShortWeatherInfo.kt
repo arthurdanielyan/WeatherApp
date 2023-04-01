@@ -17,7 +17,7 @@ data class ShortWeatherInfo(
     @ColumnInfo(name = MyCitiesDbSchema.COL_LONGITUDE)           val longitude: Double,
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = MyCitiesDbSchema.COL_ID)
-    val id: Double = city.hashCode() + latitude + longitude
+    val id: Float = (city.hashCode() + latitude + longitude).toFloat()
 ) {
 
 

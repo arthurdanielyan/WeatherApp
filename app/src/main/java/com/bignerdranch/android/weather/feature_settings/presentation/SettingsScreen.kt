@@ -87,6 +87,10 @@ fun SettingsScreen(
                 )
                 PopupSelector(
                     options = Units.TempUnits.CELSIUS.options,
+                    selectedItemIndex =
+                    Units.TempUnits.CELSIUS.options.indexOfFirst {
+                        it.key == Units.selectedTempUnitInt
+                    },
                     optionName = {
                         it.unitName
                     },
@@ -154,7 +158,7 @@ fun SettingsScreen(
                 enabled = !isDropdownOpen
             )
             val cities by viewModel.myCities.collectAsState()
-            Box {
+            Box { // SELECT HOME CITY
                 SettingOptionRow(
                     onClick = {
                         isCitySelectorExpanded = true
@@ -164,13 +168,17 @@ fun SettingsScreen(
                     showDropDownIcon = true,
                     enabled = !isDropdownOpen
                 )
-                PopupSelector(
+                val selectedCityIndex = cities.indexOfFirst { it == SettingsStorage.homeCity }
+                PopupSelector( // HOME CITY SELECTOR
                     options = cities,
+                    selectedItemIndex =
+                        if(selectedCityIndex == -1) 0 else selectedCityIndex,
                     optionName = {
                         it.cityName
                     },
                     onSelect = {
                         isCitySelectorExpanded = false
+                        viewModel.saveCity(it.id)
                     },
                     onDropdownStateChange = {
                         isDropdownOpen = it

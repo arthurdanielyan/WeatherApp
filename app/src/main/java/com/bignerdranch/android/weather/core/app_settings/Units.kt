@@ -26,7 +26,5 @@ sealed interface Units {
         override val options: List<Units>
             get() = TempUnits.values().toList()
     }
-
-    enum class O : Units
 }
 

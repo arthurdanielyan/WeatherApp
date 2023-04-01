@@ -13,7 +13,7 @@ class GetMyCitiesRepositoryImpl @Inject constructor(
         myCitiesDao.getSavedCitiesAsList().map {
             MyCity(
                 cityName = it.city,
-                id = it.id
+                id = it.id.toFloat()
             )
         }
 
