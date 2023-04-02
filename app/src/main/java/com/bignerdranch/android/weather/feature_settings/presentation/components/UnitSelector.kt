@@ -63,7 +63,7 @@ fun UnitSelector(
             color = Color.White
         )
         Text(
-            text = chosenUnit.unitName,
+            text = chosenUnit.unitSign,
             style = MaterialTheme.typography.subtitle2,
             color = Color(0xFF818181)
         )

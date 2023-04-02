@@ -15,10 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.bignerdranch.android.weather.WeatherApplication
 import com.bignerdranch.android.weather.core.app_settings.SettingsStorage
 import com.bignerdranch.android.weather.core.app_settings.Units
-import com.bignerdranch.android.weather.core.constants.planWeatherAlertNotification
-import com.bignerdranch.android.weather.core.constants.turnOffNotification
 import com.bignerdranch.android.weather.core.presentation.components.TopBar
 import com.bignerdranch.android.weather.feature_settings.presentation.components.PopupSelector
 import com.bignerdranch.android.weather.feature_settings.presentation.components.SettingOptionRow
@@ -82,7 +81,7 @@ fun SettingsScreen(
                     selectedOption =
                     Units.TempUnits.CELSIUS.options.find {
                         it.key == Units.selectedTempUnitInt
-                    }!!.unitName,
+                    }!!.unitSign,
                     showDropDownIcon = true,
                     enabled = !isDropdownOpen
                 )
@@ -93,7 +92,7 @@ fun SettingsScreen(
                         it.key == Units.selectedTempUnitInt
                     },
                     optionName = {
-                        it.unitName
+                        it.unitSign
                     },
                     onSelect = {
                         isTempSelectorExpanded = false
@@ -135,9 +134,11 @@ fun SettingsScreen(
                         viewModel.saveIsNotificationOn(it)
                         notificationToggleSwitch = it
                         if(!it) {
-                            turnOffNotification(context)
+                            (context.applicationContext as WeatherApplication)
+                                .turnOffNotification(context)
                         } else {
-                            planWeatherAlertNotification(context, pickedTime)
+                            (context.applicationContext as WeatherApplication)
+                                .planWeatherAlertNotification(context, pickedTime)
                         }
                     }
                 )
@@ -197,7 +198,8 @@ fun SettingsScreen(
                 onClick = {
                     viewModel.saveTime("${pickedTime.hour}:${pickedTime.minute}")
                     if(notificationToggleSwitch)
-                    planWeatherAlertNotification(context, pickedTime)
+                        (context.applicationContext as WeatherApplication)
+                            .planWeatherAlertNotification(context, pickedTime)
                 }
             )
             negativeButton(text = "Cancel")

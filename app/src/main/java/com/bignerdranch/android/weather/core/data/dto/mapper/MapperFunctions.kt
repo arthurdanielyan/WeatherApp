@@ -5,9 +5,9 @@ import com.bignerdranch.android.weather.core.data.dto.ForecastDayDto
 import com.bignerdranch.android.weather.core.data.dto.HourDto
 import com.bignerdranch.android.weather.core.data.dto.ForecastDto
 import com.bignerdranch.android.weather.core.model.Date
-import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.core.model.WeatherInfo
 import com.bignerdranch.android.weather.core.model.WeatherInfoList
+import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 
 fun CityWeatherDto.toCityWeather(): CityWeather =

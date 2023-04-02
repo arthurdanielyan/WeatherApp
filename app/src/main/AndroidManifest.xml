@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".core.WeatherAlertNotificationReceiver"
+        <receiver android:name=".feature_daily_notifications.WeatherAlertNotificationReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.ALARM" />

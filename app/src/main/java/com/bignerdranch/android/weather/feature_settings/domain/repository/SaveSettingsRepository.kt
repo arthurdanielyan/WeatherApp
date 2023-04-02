@@ -1,7 +1,5 @@
 package com.bignerdranch.android.weather.feature_settings.domain.repository
 
-import com.bignerdranch.android.weather.feature_settings.domain.model.MyCity
-
 interface SaveSettingsRepository {
 
     suspend fun saveTempUnit(tempUnitKey: Int)

@@ -23,7 +23,7 @@ data class WeatherInfo(
             Units.TempUnits.FAHRENHEIT -> {
                 maxTempInFahrenheit.toIntIfPossible()
             }
-        } + " ${Units.selectedTempUnit.unitName}"
+        } + " ${Units.selectedTempUnit.unitSign}"
 
     fun getMinTempString(): String =
         when(Units.selectedTempUnit) {
@@ -33,7 +33,7 @@ data class WeatherInfo(
             Units.TempUnits.FAHRENHEIT -> {
                 minTempInFahrenheit.toIntIfPossible()
             }
-        } + " ${Units.selectedTempUnit.unitName}"
+        } + " ${Units.selectedTempUnit.unitSign}"
 
     fun getMaxTemp(): Double =
         when(Units.selectedTempUnit) {

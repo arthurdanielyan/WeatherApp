@@ -1,6 +1,6 @@
 package com.bignerdranch.android.weather.feature_settings.domain.usecases
 
-import com.bignerdranch.android.weather.feature_settings.domain.model.MyCity
+import com.bignerdranch.android.weather.core.model.MyCity
 import com.bignerdranch.android.weather.feature_settings.domain.repository.GetMyCitiesRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

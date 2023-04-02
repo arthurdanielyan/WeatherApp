@@ -22,5 +22,5 @@ data class HourForecast(
             Units.TempUnits.FAHRENHEIT -> {
                 tempInFahrenheit.toIntIfPossible()
             }
-        } + " ${Units.selectedTempUnit.unitName}"
+        } + " ${Units.selectedTempUnit.unitSign}"
 }

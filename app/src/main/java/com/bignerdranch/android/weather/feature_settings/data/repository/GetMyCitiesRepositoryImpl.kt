@@ -1,7 +1,7 @@
 package com.bignerdranch.android.weather.feature_settings.data.repository
 
 import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao
-import com.bignerdranch.android.weather.feature_settings.domain.model.MyCity
+import com.bignerdranch.android.weather.core.model.MyCity
 import com.bignerdranch.android.weather.feature_settings.domain.repository.GetMyCitiesRepository
 import javax.inject.Inject
 
@@ -13,7 +13,7 @@ class GetMyCitiesRepositoryImpl @Inject constructor(
         myCitiesDao.getSavedCitiesAsList().map {
             MyCity(
                 cityName = it.city,
-                id = it.id.toFloat()
+                id = it.id
             )
         }
 

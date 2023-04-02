@@ -2,8 +2,8 @@ package com.bignerdranch.android.weather.feature_city_weather.domain.model
 
 import android.graphics.Bitmap
 import com.bignerdranch.android.weather.core.app_settings.Units
-import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.core.extensions.toIntIfPossible
 
 fun CityWeather.toShortWeatherInfo() =
     ShortWeatherInfo(
@@ -31,5 +31,5 @@ data class CityWeather(
             Units.TempUnits.FAHRENHEIT -> {
                 tempInFahrenheit.toIntIfPossible()
             }
-        } + " ${Units.selectedTempUnit.unitName}"
+        } + " ${Units.selectedTempUnit.unitSign}"
 }

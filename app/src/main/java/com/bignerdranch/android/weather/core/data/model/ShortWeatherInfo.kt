@@ -30,7 +30,7 @@ data class ShortWeatherInfo(
             Units.TempUnits.FAHRENHEIT -> {
                 tempInFahrenheit.toIntIfPossible()
             }
-        } + " ${Units.selectedTempUnit.unitName}"
+        } + " ${Units.selectedTempUnit.unitSign}"
 
 
 

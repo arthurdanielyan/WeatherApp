@@ -6,7 +6,6 @@ import com.bignerdranch.android.weather.core.app_settings.Units
 import com.bignerdranch.android.weather.core.constants.*
 import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao
 import com.bignerdranch.android.weather.core.domain.repository.LoadSettingsRepository
-import com.bignerdranch.android.weather.feature_settings.domain.model.MyCity
 import javax.inject.Inject
 
 class LoadSettingsRepositoryImpl @Inject constructor (

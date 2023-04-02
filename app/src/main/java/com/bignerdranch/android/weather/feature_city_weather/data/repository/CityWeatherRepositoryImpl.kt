@@ -9,10 +9,10 @@ import com.bignerdranch.android.weather.core.data.dto.mapper.toShortForecast
 import com.bignerdranch.android.weather.core.data.room.daos.MyCitiesDao
 import com.bignerdranch.android.weather.core.model.Result
 import com.bignerdranch.android.weather.core.model.WeatherInfoList
-import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.domain.repository.CityWeatherRepository
 import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.feature_city_weather.domain.model.CityWeather
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException

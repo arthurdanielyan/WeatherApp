@@ -16,10 +16,10 @@ sealed interface Units {
 
     val key: Int
     val unitOf: String
-    val unitName: String
+    val unitSign: String
     val options: List<Units>
 
-    enum class TempUnits(override val key: Int, override val unitName: String) : Units {
+    enum class TempUnits(override val key: Int, override val unitSign: String) : Units {
         CELSIUS(0, "°C"), FAHRENHEIT(1, "°F");
 
         override val unitOf: String = "Temperature units"
