@@ -9,7 +9,6 @@ import com.bignerdranch.android.weather.feature_daily_notifications.WeatherAlert
 import com.bignerdranch.android.weather.core.app_settings.SettingsStorage
 import com.bignerdranch.android.weather.core.constants.NOTIFICATION_CITY_INFO_EXTRA
 import com.bignerdranch.android.weather.core.constants.WEATHER_ALERT_NOTIFICATION_REQUEST_CODE
-import com.bignerdranch.android.weather.core.constants.log
 import com.bignerdranch.android.weather.core.domain.usecases.LoadSettingsUseCase
 import com.bignerdranch.android.weather.feature_daily_notifications.domain.repository.DailyNotificationRepository
 import dagger.hilt.android.HiltAndroidApp
@@ -37,35 +36,33 @@ class WeatherApplication : Application() {
             settingsLoaded = true
             if (SettingsStorage.isWeatherAlertNotificationsEnabled) {
                 planWeatherAlertNotification(
-                    baseContext,
                     LocalTime.of(
                         SettingsStorage.notificationTime.substringBefore(':').toInt(),
                         SettingsStorage.notificationTime.substringAfter(':').toInt()
-                    ))
+                    )
+                )
             } else {
-                turnOffNotification(baseContext)
+                turnOffNotification()
             }
         }
     }
 
-    fun planWeatherAlertNotification(context: Context, time: LocalTime) {
+    fun planWeatherAlertNotification(time: LocalTime) {
         CoroutineScope(coroutineDispatcher + SupervisorJob()).launch {
             val notificationWeatherInfo =
                 async(coroutineDispatcher) {
                     val myCity =
                         dailyNotificationRepository.getSavedCity()?.cityName ?: return@async null
-                    log(myCity)
                     val weatherInfo = dailyNotificationRepository.getNotificationWeather(myCity)
-                    log(weatherInfo)
                     weatherInfo
-                }.await() ?: return@launch
+                }.await()// ?: return@launch
 
-            val intent = Intent(context, WeatherAlertNotificationReceiver::class.java).apply {
+            val intent = Intent(applicationContext, WeatherAlertNotificationReceiver::class.java).apply {
                 action = "android.intent.action.ALARM"
                 putExtra(NOTIFICATION_CITY_INFO_EXTRA, notificationWeatherInfo)
             }
             val pendingIntent = PendingIntent.getBroadcast(
-                context,
+                applicationContext,
                 WEATHER_ALERT_NOTIFICATION_REQUEST_CODE,
                 intent,
                 PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -77,7 +74,7 @@ class WeatherApplication : Application() {
                 set(Calendar.SECOND, 0)
             }
 
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
 
             if (System.currentTimeMillis() <= triggerTime.timeInMillis) {
@@ -97,10 +94,10 @@ class WeatherApplication : Application() {
         }
     }
 
-    fun turnOffNotification(context: Context) {
-        val intent = Intent(context, WeatherAlertNotificationReceiver::class.java)
+    fun turnOffNotification() {
+        val intent = Intent(applicationContext, WeatherAlertNotificationReceiver::class.java)
         intent.action = "android.intent.action.ALARM"
-        val pendingIntent = PendingIntent.getBroadcast(context, WEATHER_ALERT_NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, WEATHER_ALERT_NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         pendingIntent.cancel()
     }
 }

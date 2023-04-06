@@ -23,7 +23,6 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bignerdranch.android.weather.core.constants.log
 import com.bignerdranch.android.weather.core.extensions.dayName
 import com.bignerdranch.android.weather.core.extensions.normalized
 import com.bignerdranch.android.weather.core.model.WeatherInfo
@@ -113,7 +112,6 @@ fun DayInfoCard(
                     width = graphStroke.dp.toPx()
                 )
             )
-            log((-cardWidthInDp))
             drawText(
                 textMeasurer = textMeasurer,
                 text = weatherInfo.getMaxTempString(),

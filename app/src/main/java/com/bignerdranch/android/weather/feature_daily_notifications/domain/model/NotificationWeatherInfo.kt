@@ -9,7 +9,8 @@ data class NotificationWeatherInfo(
     val maxTempInCelsius: Double,
     val minTempInCelsius: Double,
     val maxTempInFahrenheit: Double,
-    val minTempInFahrenheit: Double
+    val minTempInFahrenheit: Double,
+    val condition: String
 ) : Serializable {
 
     fun getMaxTemp(): String =

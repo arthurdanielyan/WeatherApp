@@ -135,10 +135,10 @@ fun SettingsScreen(
                         notificationToggleSwitch = it
                         if(!it) {
                             (context.applicationContext as WeatherApplication)
-                                .turnOffNotification(context)
+                                .turnOffNotification()
                         } else {
                             (context.applicationContext as WeatherApplication)
-                                .planWeatherAlertNotification(context, pickedTime)
+                                .planWeatherAlertNotification(pickedTime)
                         }
                     }
                 )
@@ -199,7 +199,7 @@ fun SettingsScreen(
                     viewModel.saveTime("${pickedTime.hour}:${pickedTime.minute}")
                     if(notificationToggleSwitch)
                         (context.applicationContext as WeatherApplication)
-                            .planWeatherAlertNotification(context, pickedTime)
+                            .planWeatherAlertNotification(pickedTime)
                 }
             )
             negativeButton(text = "Cancel")
