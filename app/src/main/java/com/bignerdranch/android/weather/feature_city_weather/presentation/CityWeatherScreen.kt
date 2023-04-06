@@ -1,5 +1,7 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation
 
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_MOVE
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -16,6 +18,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -23,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layoutId
@@ -36,6 +40,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
+import com.bignerdranch.android.weather.core.constants.log
 import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.core.presentation.components.ClickableIcon
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
@@ -49,6 +54,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 const val ADD_BUTTON_ID = "add_button"
@@ -57,6 +63,7 @@ const val REFRESH_BUTTON_ID = "refresh_button"
 const val COUNTRY_TEXT_ID = "country_button"
 const val BACK_BUTTON_ID = "back_button"
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CityWeatherScreen(
     viewModel: CityWeatherViewModel,
@@ -162,71 +169,103 @@ fun CityWeatherScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
             ) {
-                Column(
+                Row( // top bar row
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Row( // top bar row
+                    ConstraintLayout(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        constraintSet = constraintsTopBar
                     ) {
-                        ConstraintLayout(
+                        ClickableIcon(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            constraintSet = constraintsTopBar
-                        ) {
-                            ClickableIcon(
-                                modifier = Modifier
-                                    .layoutId(BACK_BUTTON_ID)
-                                    .padding(bottom = 16.dp),
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Navigate back",
-                                onClick = navController::popBackStack
-                            )
-                            ClickableIcon(
-                                modifier = Modifier
-                                    .layoutId(ADD_BUTTON_ID),
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Add city",
-                                onClick = viewModel::saveCity
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .layoutId(CITY_TEXT_BOX_ID)
-                                    .padding(horizontal = 24.dp)
-                                    .horizontalScroll(rememberScrollState()),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = weatherState.value?.city ?: "Loading…",
-                                    style = MaterialTheme.typography.h4,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                            Text(
-                                modifier = Modifier
-                                    .layoutId(COUNTRY_TEXT_ID)
-                                    .padding(top = 8.dp),
-                                text = weatherState.value?.country ?: "Loading…",
-                                fontSize = 15.sp
-                            )
-                            ClickableIcon(
-                                modifier = Modifier
-                                    .layoutId(REFRESH_BUTTON_ID),
-                                imageVector = Icons.Default.Refresh,
-                                contentDescription = "Reload",
-                                onClick = {
-                                    weatherState.value?.city?.let {
-                                        viewModel.getCityWeather(it)
+                                .layoutId(BACK_BUTTON_ID)
+                                .padding(bottom = 16.dp),
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Navigate back",
+                            onClick = navController::popBackStack
+                        )
+                        ClickableIcon(
+                            modifier = Modifier
+                                .layoutId(ADD_BUTTON_ID),
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add city",
+                            onClick = viewModel::saveCity
+                        )
+//                        val cityNameScrollState = rememberScrollState()
+                        var initialX by remember { mutableStateOf(0f) }
+                        var lettersSkipped by remember { mutableStateOf(0) }
+                        val actualCityText = weatherState.value?.city
+                        val readyCityNameText = weatherState.value?.city?.substring(lettersSkipped)
+                        Row(
+                            modifier = Modifier
+                                .layoutId(CITY_TEXT_BOX_ID)
+                                .padding(horizontal = 24.dp)
+                                .pointerInteropFilter { motionEvent ->
+                                    if(actualCityText != null && readyCityNameText != null)
+                                    when(motionEvent.action) {
+                                        ACTION_DOWN -> {
+                                            initialX = motionEvent.x
+                                            log("down")
+                                        }
+                                        ACTION_MOVE -> {
+                                            val currentX = motionEvent.x
+                                            val sensitivity = 20 // the higher the sensitivity the harder it is to scroll
+                                            val lettersToBeSkipped = (currentX - initialX).toInt() / sensitivity
+                                            log("move $lettersToBeSkipped")
+                                            lettersSkipped =
+                                                if(lettersToBeSkipped > 0) { //scrolled in the opposite direction
+                                                    0
+                                                }
+//                                                else if(actualCityText.length == lettersSkipped + 2) {
+//                                                    lettersSkipped
+//                                                }
+                                                else lettersToBeSkipped.absoluteValue
+                                        }
+                                        else -> {}
                                     }
-                                }
+                                    else log("null")
+                                    true
+                                },
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = readyCityNameText ?: "Loading…",
+                                style = MaterialTheme.typography.h4,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
+                        Text(
+                            modifier = Modifier
+                                .layoutId(COUNTRY_TEXT_ID)
+                                .padding(top = 8.dp),
+                            text = weatherState.value?.country ?: "Loading…",
+                            fontSize = 15.sp
+                        )
+                        ClickableIcon(
+                            modifier = Modifier
+                                .layoutId(REFRESH_BUTTON_ID),
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Reload",
+                            onClick = {
+                                weatherState.value?.city?.let {
+                                    viewModel.getCityWeather(it)
+                                }
+                            }
+                        )
                     }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+
                     Column(
                         // temp and description column
                         modifier = Modifier
@@ -322,26 +361,27 @@ fun CityWeatherScreen(
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) { Text("5-day forecast") } // 5-day forecast button
-                }
-                val hourlyForecastState by viewModel.hourlyForecastState.collectAsState()
-                if(!hourlyForecastState.isLoading) {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        items(hourlyForecastState.list ?: emptyList()) { item: HourForecast ->
-                            HourForecast(item)
+
+                    val hourlyForecastState by viewModel.hourlyForecastState.collectAsState()
+                    if (!hourlyForecastState.isLoading) {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            items(hourlyForecastState.list ?: emptyList()) { item: HourForecast ->
+                                HourForecast(item)
+                            }
                         }
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = Color(0xFF1F3C88)
-                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = Color(0xFF1F3C88)
+                            )
+                        }
                     }
                 }
             }
