@@ -1,7 +1,5 @@
 package com.bignerdranch.android.weather.feature_city_weather.presentation
 
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.MotionEvent.ACTION_MOVE
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -26,26 +24,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import com.bignerdranch.android.weather.core.constants.log
 import com.bignerdranch.android.weather.core.presentation.Screen
 import com.bignerdranch.android.weather.core.presentation.components.ClickableIcon
 import com.bignerdranch.android.weather.feature_city_weather.domain.model.HourForecast
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ExtremePointsWeatherCard
 import com.bignerdranch.android.weather.feature_city_weather.presentation.components.HourForecast
+import com.bignerdranch.android.weather.feature_city_weather.presentation.components.ScrollableText
 import com.bignerdranch.android.weather.feature_city_weather.presentation.state_wrappers.ScreenEvent
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
@@ -54,7 +50,6 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 const val ADD_BUTTON_ID = "add_button"
@@ -63,7 +58,6 @@ const val REFRESH_BUTTON_ID = "refresh_button"
 const val COUNTRY_TEXT_ID = "country_button"
 const val BACK_BUTTON_ID = "back_button"
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CityWeatherScreen(
     viewModel: CityWeatherViewModel,
@@ -195,50 +189,13 @@ fun CityWeatherScreen(
                             contentDescription = "Add city",
                             onClick = viewModel::saveCity
                         )
-//                        val cityNameScrollState = rememberScrollState()
-                        var initialX by remember { mutableStateOf(0f) }
-                        var lettersSkipped by remember { mutableStateOf(0) }
-                        val actualCityText = weatherState.value?.city
-                        val readyCityNameText = weatherState.value?.city?.substring(lettersSkipped)
-                        Row(
+                        ScrollableText(
                             modifier = Modifier
                                 .layoutId(CITY_TEXT_BOX_ID)
-                                .padding(horizontal = 24.dp)
-                                .pointerInteropFilter { motionEvent ->
-                                    if(actualCityText != null && readyCityNameText != null)
-                                    when(motionEvent.action) {
-                                        ACTION_DOWN -> {
-                                            initialX = motionEvent.x
-                                            log("down")
-                                        }
-                                        ACTION_MOVE -> {
-                                            val currentX = motionEvent.x
-                                            val sensitivity = 20 // the higher the sensitivity the harder it is to scroll
-                                            val lettersToBeSkipped = (currentX - initialX).toInt() / sensitivity
-                                            log("move $lettersToBeSkipped")
-                                            lettersSkipped =
-                                                if(lettersToBeSkipped > 0) { //scrolled in the opposite direction
-                                                    0
-                                                }
-//                                                else if(actualCityText.length == lettersSkipped + 2) {
-//                                                    lettersSkipped
-//                                                }
-                                                else lettersToBeSkipped.absoluteValue
-                                        }
-                                        else -> {}
-                                    }
-                                    else log("null")
-                                    true
-                                },
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = readyCityNameText ?: "Loading…",
-                                style = MaterialTheme.typography.h4,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
+                                .padding(horizontal = 24.dp),
+                            text = weatherState.value?.city ?: "Loading…",
+                            style = MaterialTheme.typography.h4
+                        )
                         Text(
                             modifier = Modifier
                                 .layoutId(COUNTRY_TEXT_ID)
