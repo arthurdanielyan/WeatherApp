@@ -18,7 +18,7 @@ class GetMyCitiesUseCase @Inject constructor (
             repository.getCities().map { myCitiesList ->
                 val myCitiesUpdated = myCitiesList.toMutableList()
                 myCitiesList.forEachIndexed { index, city ->
-                    repository.searchCity(city.city).collectLatest { newValuesResult ->
+                    repository.getCityWeather(city.city).collectLatest { newValuesResult ->
                         when(newValuesResult) {
                             is Result.Success -> {
                                 myCitiesUpdated[index] = newValuesResult.data!!

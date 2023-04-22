@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bignerdranch.android.weather.core.extensions.scalingClickAnimation
 import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
+import com.bignerdranch.android.weather.core.extensions.scalingClickAnimation
 import com.bignerdranch.android.weather.ui.theme.defaultGradientEnd
 import com.bignerdranch.android.weather.ui.theme.defaultGradientStart
 

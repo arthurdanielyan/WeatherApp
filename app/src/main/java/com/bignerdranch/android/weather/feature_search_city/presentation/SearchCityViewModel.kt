@@ -44,26 +44,27 @@ class SearchCityViewModel @Inject constructor(
     fun searchCity(cityName: String) {
         searching?.cancel()
         searching = viewModelScope.launch {
-            searchCityUseCase(cityName).collect { result: Result<ShortWeatherInfo> ->
+            searchCityUseCase(cityName).collect { result: Result<List<ShortWeatherInfo>> ->
                 when(result) {
                     is Result.Success -> {
                         _searchedCityWeather.value = ShortWeatherInfoState(
                             isLoading = false,
-                            shortWeatherInfo = result.data!!,
+                            searchedCities = result.data!!,
                             error = ""
                         )
+
                     }
                     is Result.Loading -> {
                         _searchedCityWeather.value = ShortWeatherInfoState(
                             isLoading = true,
-                            shortWeatherInfo = null,
+                            searchedCities = emptyList(),
                             error = ""
                         )
                     }
                     is Result.Error -> {
                         _searchedCityWeather.value = ShortWeatherInfoState(
                             isLoading = false,
-                            shortWeatherInfo = null,
+                            searchedCities = emptyList(),
                             error = result.message!!
                         )
                     }

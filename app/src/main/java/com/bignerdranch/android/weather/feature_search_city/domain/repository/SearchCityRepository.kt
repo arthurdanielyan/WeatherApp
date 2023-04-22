@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchCityRepository {
 
-    suspend fun searchCity(cityName: String): Flow<Result<ShortWeatherInfo>>
+    suspend fun searchCity(cityQuery: String): Flow<Result<List<ShortWeatherInfo>>>
+
+    suspend fun getCityWeather(city: String): Flow<Result<ShortWeatherInfo>>
 
     suspend fun getCities(): Flow<List<ShortWeatherInfo>>
 }

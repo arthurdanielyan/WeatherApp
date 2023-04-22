@@ -4,6 +4,6 @@ import com.bignerdranch.android.weather.core.data.model.ShortWeatherInfo
 
 data class ShortWeatherInfoState (
     val isLoading: Boolean = false,
-    val shortWeatherInfo: ShortWeatherInfo? = null,
+    val searchedCities: List<ShortWeatherInfo> = emptyList(),
     val error: String = ""
 )
